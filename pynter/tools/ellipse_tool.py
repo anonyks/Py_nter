@@ -1,0 +1,110 @@
+"""Ellipse tool - drag to define bounding box. Uses midpoint ellipse algorithm."""
+
+import pygame
+from pynter.tools.tool import Tool
+from pynter import globals as g
+
+
+class EllipseTool(Tool):
+    def __init__(self):
+        self.is_dragging = False
+        self.initial_pos = (0, 0)
+        self.final_pos = (0, 0)
+
+    def params(self):
+        xc = (self.initial_pos[0] + self.final_pos[0]) // 2
+        yc = (self.initial_pos[1] + self.final_pos[1]) // 2
+        rx = abs(self.final_pos[0] - self.initial_pos[0]) // 2
+        ry = abs(self.final_pos[1] - self.initial_pos[1]) // 2
+        return xc, yc, rx, ry
+
+    # Midpoint ellipse algorithm
+    # Plots 4 symmetric points per step
+    def plot_4(self, surface, cx, cy, x, y, color):
+        surface.set_at((cx + x, cy + y), color)
+        surface.set_at((cx - x, cy + y), color)
+        surface.set_at((cx + x, cy - y), color)
+        surface.set_at((cx - x, cy - y), color)
+
+    def draw_midpoint_ellipse(self, surface, cx, cy, rx, ry, color, width=1):
+        if rx <= 0 or ry <= 0:
+            return
+
+        if width <= 1:
+            self.draw_single_ellipse(surface, cx, cy, rx, ry, color)
+        else:
+            # Thick outline: draw concentric ellipses
+            half = width // 2
+            for i in range(-half, width - half):
+                arx = max(1, rx + i)
+                ary = max(1, ry + i)
+                self.draw_single_ellipse(surface, cx, cy, arx, ary, color)
+
+    def draw_single_ellipse(self, surface, cx, cy, rx, ry, color):
+        # Region 1: moving along x axis (slope is gentle)
+        x, y = 0, ry
+        rx2 = rx * rx
+        ry2 = ry * ry
+        d1 = ry2 - rx2 * ry + rx2 // 4
+        self.plot_4(surface, cx, cy, x, y, color)
+
+        while ry2 * x < rx2 * y:
+            x += 1
+            if d1 < 0:
+                d1 += 2 * ry2 * x + ry2
+            else:
+                y -= 1
+                d1 += 2 * ry2 * x - 2 * rx2 * y + ry2
+            self.plot_4(surface, cx, cy, x, y, color)
+
+        # Region 2: moving along y axis (slope is steep)
+        d2 = ry2 * (x * 2 + 1) ** 2 // 4 + rx2 * (y - 1) ** 2 - rx2 * ry2
+        while y >= 0:
+            y -= 1
+            if d2 > 0:
+                d2 += rx2 - 2 * rx2 * y
+            else:
+                x += 1
+                d2 += 2 * ry2 * x - 2 * rx2 * y + rx2
+            self.plot_4(surface, cx, cy, x, y, color)
+
+    def draw(self, surface):
+        pass
+
+    def handle_events(self, event):
+        if event is None:
+            return
+        mx, my = g.mouse_pos
+        if event.type == pygame.MOUSEWHEEL:
+            g.line_width += event.y
+            g.line_width = max(1, min(20, g.line_width))
+        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            # Ignore clicks outside canvas
+            if my < g.TOOLBAR_HEIGHT or mx < g.SIDE_PANEL_WIDTH:
+                return
+            g.push_undo_snapshot()
+            self.is_dragging = True
+            self.initial_pos = (mx, my)
+            self.final_pos = (mx, my)
+        elif event.type == pygame.MOUSEMOTION and self.is_dragging:
+            self.final_pos = (mx, my)
+        elif event.type == pygame.MOUSEBUTTONUP and event.button == 1 and self.is_dragging:
+            self.final_pos = (mx, my)
+            if g.canvas_surface is not None:
+                xc, yc, rx, ry = self.params()
+                if rx > 0 and ry > 0:
+                    self.draw_midpoint_ellipse(
+                        g.canvas_surface, xc, yc, rx, ry,
+                        g.COLORS[g.color_selected], g.line_width
+                    )
+            self.is_dragging = False
+
+    def preview(self, screen):
+        if self.is_dragging:
+            xc, yc, rx, ry = self.params()
+            if rx > 0 and ry > 0:
+                self.draw_midpoint_ellipse(
+                    screen, xc, yc, rx, ry,
+                    g.COLORS[g.color_selected], g.line_width
+                )
+
