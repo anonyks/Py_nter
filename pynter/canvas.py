@@ -1,6 +1,4 @@
-"""
-Drawing canvas - owns the persistent surface that tools draw onto.
-"""
+# Drawing canvas - owns the persistent surface that tools draw onto.
 
 import pygame
 from pynter import globals as g
@@ -8,7 +6,7 @@ from pynter.tool_select import ToolSelect
 
 
 class Canvas:
-    def __init__(self, tool_select: ToolSelect):
+    def __init__(self, tool_select):
         self.tool_select = tool_select
 
     def init(self):

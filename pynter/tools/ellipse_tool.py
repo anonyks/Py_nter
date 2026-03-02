@@ -1,4 +1,4 @@
-"""Ellipse tool - drag to define bounding box. Uses midpoint ellipse algorithm."""
+# Ellipse tool - drag to define bounding box. Uses midpoint ellipse algorithm.
 
 import pygame
 from pynter.tools.tool import Tool

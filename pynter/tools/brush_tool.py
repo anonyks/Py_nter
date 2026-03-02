@@ -1,5 +1,5 @@
-"""Brush tool - circle or spray brush. Tab to switch type, scroll to resize,
-Shift+scroll to change spray density."""
+# Brush tool - circle or spray brush. Tab to switch type, scroll to resize,
+# Shift+scroll to change spray density.
 
 import random
 import pygame
@@ -62,7 +62,7 @@ class BrushTool(Tool):
                            my - tip.get_height() // 2))
 
     def draw_smooth_line(self, surface, start, end, color):
-        """Draw a smooth line between two points using brush stamps."""
+        # Draw a smooth line between two points using brush stamps.
         x1, y1 = start
         x2, y2 = end
 

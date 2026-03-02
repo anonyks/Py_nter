@@ -1,4 +1,4 @@
-"""Mandala tool - draws with radial symmetry around a center point."""
+# Mandala tool - draws with radial symmetry around a center point.
 
 import math
 import pygame
@@ -19,7 +19,7 @@ class MandalaTool(Tool):
         pass
 
     def draw_symmetric_line(self, surface, start, end):
-        """Draw a smooth symmetric line between two points."""
+        # Draw a smooth symmetric line between two points.
         color = g.COLORS[g.color_selected]
         cx, cy = self.center_pos
         
@@ -56,7 +56,7 @@ class MandalaTool(Tool):
                     pygame.draw.circle(surface, color, (px, py), self.brush_size // 2)
 
     def draw_symmetric_stroke(self, surface, stroke_points):
-        """Draw a stroke with radial symmetry."""
+        # Draw a stroke with radial symmetry.
         if len(stroke_points) < 2:
             return
             

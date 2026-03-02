@@ -1,4 +1,4 @@
-"""Magnifier tool - shows a zoomed-in view around the cursor."""
+# Magnifier tool - shows a zoomed-in view around the cursor.
 
 import pygame
 from pynter.tools.tool import Tool
@@ -6,11 +6,8 @@ from pynter import globals as g
 
 
 class MagnifierTool(Tool):
-    """
-    Hover over the canvas to see a magnified preview of the area
-    around the cursor.  Scroll wheel adjusts zoom level.
-    This is a read-only tool -- it does not modify the canvas.
-    """
+    # Hover over the canvas to see a magnified preview around the cursor.
+    # Scroll wheel adjusts zoom level. Read-only, does not modify canvas.
 
     def __init__(self):
         self.zoom = 4          # magnification factor (2x-10x)

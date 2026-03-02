@@ -1,4 +1,4 @@
-"""Line tool - drawn on mouse release. Uses pygame.draw.line for adjustable width."""
+# Line tool - drawn on mouse release. Uses pygame.draw.line for adjustable width.
 
 import pygame
 from pynter.tools.tool import Tool

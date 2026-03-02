@@ -1,6 +1,4 @@
-"""
-Global state shared across the application.
-"""
+# Global state shared across the application.
 
 import pygame
 
@@ -56,7 +54,7 @@ _redo_stack = []
 
 
 def push_undo_snapshot():
-    """Save a copy of the canvas so we can undo later."""
+    # Save a copy of the canvas so we can undo later.
     if canvas_surface is None:
         return
     _undo_stack.append(canvas_surface.copy())
@@ -66,7 +64,7 @@ def push_undo_snapshot():
 
 
 def undo():
-    """Restore previous canvas state."""
+    # Restore previous canvas state.
     global canvas_surface
     if not _undo_stack or canvas_surface is None:
         return
@@ -75,7 +73,7 @@ def undo():
 
 
 def redo():
-    """Re-apply undone canvas state."""
+    # Re-apply undone canvas state.
     global canvas_surface
     if not _redo_stack or canvas_surface is None:
         return

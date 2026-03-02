@@ -1,4 +1,4 @@
-"""Fill (flood-fill / paint bucket) tool."""
+# Fill (flood-fill / paint bucket) tool.
 
 import pygame
 from collections import deque
@@ -7,11 +7,9 @@ from pynter import globals as g
 
 
 class FillTool(Tool):
-    """
-    Click anywhere on the canvas to fill the clicked area
-    with the selected colour. Only fills pixels that match
-    the exact colour you clicked on.
-    """
+    # Click anywhere on the canvas to fill the clicked area
+    # with the selected colour. Only fills pixels that match
+    # the exact colour you clicked on.
 
     def draw(self, surface):
         pass  # instant commit
@@ -37,7 +35,7 @@ class FillTool(Tool):
 
     @staticmethod
     def flood_fill(surface, x, y):
-        """Fill the area starting from pixel (x, y) outward."""
+        # Fill the area starting from pixel (x, y) outward.
         w, h = surface.get_size()
         if x < 0 or x >= w or y < 0 or y >= h:
             return

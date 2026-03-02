@@ -1,4 +1,4 @@
-"""Eye-dropper (colour picker) tool - click to sample a colour from the canvas."""
+# Eye-dropper (colour picker) tool - click to sample a colour from the canvas.
 
 import pygame
 from pynter.tools.tool import Tool
@@ -6,12 +6,8 @@ from pynter import globals as g
 
 
 class EyeDropperTool(Tool):
-    """
-    Click on the canvas to pick the colour under the cursor and
-    set it as the active drawing colour.  The closest palette
-    entry is selected, or if no exact match the raw colour is
-    pushed into the first palette slot so you can still use it.
-    """
+    # Click on the canvas to pick the colour under the cursor
+    # and set it as the active drawing colour.
 
     def __init__(self):
         self.sampled_color = None
@@ -44,7 +40,7 @@ class EyeDropperTool(Tool):
 
     @staticmethod
     def match_palette(color):
-        """Find the closest palette colour and select it."""
+        # Find the closest palette colour and select it.
         best_idx = 0
         best_dist = float("inf")
         for i, pc in enumerate(g.COLORS):

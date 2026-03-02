@@ -1,4 +1,4 @@
-"""Select-box tool - select a region, move it, press Enter to commit."""
+# Select-box tool - select a region, move it, press Enter to commit.
 
 import pygame
 from pynter.tools.tool import Tool
@@ -25,7 +25,7 @@ class SelectBoxTool(Tool):
 
     @staticmethod
     def draw_dashed_rect(surface, rect):
-        """Draw a dashed rectangle outline."""
+        # Draw a dashed rectangle outline.
         color = (0, 0, 0)
         # Top & bottom edges
         for i in range(0, rect.width, 8):
@@ -138,7 +138,7 @@ class SelectBoxTool(Tool):
                 self.selected_surface = None
 
     def refit_rect(self):
-        """Re-centre the selection rect after a transform changes size."""
+        # Re-centre the selection rect after a transform changes size.
         if self.selected_surface is None:
             return
         cx = self.selected_rect.x + self.selected_rect.width // 2

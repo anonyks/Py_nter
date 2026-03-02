@@ -1,4 +1,4 @@
-"""Triangle tool - drag to draw an equilateral-ish triangle outline."""
+# Triangle tool - drag to draw an equilateral-ish triangle outline.
 
 import pygame
 from pynter.tools.tool import Tool
@@ -6,11 +6,8 @@ from pynter import globals as g
 
 
 class TriangleTool(Tool):
-    """
-    Click and drag to define the bounding box of a triangle.
-    The triangle's base sits at the bottom of the drag rectangle,
-    and the apex is centred at the top.
-    """
+    # Click and drag to define the bounding box of a triangle.
+    # Base sits at the bottom, apex is centred at the top.
 
     def __init__(self):
         self.is_dragging = False

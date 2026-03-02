@@ -1,4 +1,4 @@
-"""Text input tool - click to place text on the canvas."""
+# Text input tool - click to place text on the canvas.
 
 import pygame
 from pynter.tools.tool import Tool
@@ -6,12 +6,8 @@ from pynter import globals as g
 
 
 class TextTool(Tool):
-    """
-    Click on the canvas to set a text insertion point, then type.
-    Press Enter to commit the text to the canvas.
-    Press Escape to cancel.
-    Backspace deletes the last character.
-    """
+    # Click on the canvas to set a text insertion point, then type.
+    # Press Enter to commit, Escape to cancel, Backspace to delete.
 
     def __init__(self):
         self.active = False
@@ -28,7 +24,7 @@ class TextTool(Tool):
         return self.cached_font
 
     def invalidate_font(self):
-        """Clear font cache when size or family changes."""
+        # Clear font cache when size or family changes.
         self.cached_font = None
 
     def draw(self, surface):
@@ -98,7 +94,7 @@ class TextTool(Tool):
             screen.blit(hint, (mx + 6, my - 14))
 
     def commit(self):
-        """Render the text onto the canvas surface."""
+        # Render the text onto the canvas surface.
         if g.canvas_surface is not None and self.text:
             g.push_undo_snapshot()
             txt_surface = self.get_font().render(self.text, True, g.COLORS[g.color_selected])

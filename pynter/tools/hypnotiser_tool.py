@@ -1,4 +1,4 @@
-"""Hypnotiser tool - draws expanding alternating-band rings (classic hypnotic spiral)."""
+# Hypnotiser tool - draws expanding alternating-band rings (classic hypnotic spiral).
 
 import pygame
 from pynter.tools.tool import Tool

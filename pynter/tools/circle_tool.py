@@ -1,4 +1,4 @@
-"""Circle tool - drag to set center & radius. Uses midpoint circle algorithm."""
+# Circle tool - drag to set center & radius. Uses midpoint circle algorithm.
 
 import math
 import pygame

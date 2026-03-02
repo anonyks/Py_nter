@@ -1,4 +1,4 @@
-"""Eraser tool - draws white rectangles, size adjustable via scroll wheel."""
+# Eraser tool - draws white rectangles, size adjustable via scroll wheel.
 
 import pygame
 from pynter.tools.tool import Tool
@@ -70,7 +70,7 @@ class EraserTool(Tool):
                     surface.set_at((px, py), (r, gr, b))
 
     def erase_line(self, surface, start, end):
-        """Interpolate between two points for gap-free erasing."""
+        # Interpolate between two points for gap-free erasing.
         x0, y0 = start
         x1, y1 = end
         dx = x1 - x0

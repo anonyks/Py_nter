@@ -1,4 +1,4 @@
-"""Rectangle tool - drag to draw a rectangle outline."""
+# Rectangle tool - drag to draw a rectangle outline.
 
 import pygame
 from pynter.tools.tool import Tool

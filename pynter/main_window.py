@@ -1,6 +1,4 @@
-"""
-Main window - sets up pygame, runs the game loop.
-"""
+# Main window - sets up pygame, runs the game loop.
 
 import pygame
 from pynter import globals as g

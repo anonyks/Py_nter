@@ -1,4 +1,4 @@
-"""Square tool - drag to draw a square where all sides are equal."""
+# Square tool - drag to draw a square where all sides are equal.
 
 import pygame
 from pynter.tools.tool import Tool

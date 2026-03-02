@@ -1,4 +1,4 @@
-"""Pencil tool - draws small filled circles while the mouse is held down."""
+# Pencil tool - draws small filled circles while the mouse is held down.
 
 import pygame
 from pynter.tools.tool import Tool
@@ -33,7 +33,7 @@ class PencilTool(Tool):
             self.last_pos = None
 
     def draw_line(self, surface, start, end):
-        """Draw a smooth line between two points using circles."""
+        # Draw a smooth line between two points using circles.
         x1, y1 = start
         x2, y2 = end
         

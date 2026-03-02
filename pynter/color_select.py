@@ -1,6 +1,4 @@
-"""
-Color palette panel at the top of the window.
-"""
+# Color palette panel at the top of the window.
 
 import pygame
 from pynter import globals as g
@@ -8,7 +6,7 @@ from pynter.bitmap import bitmap_to_surface, ICON_FILE_SAVE, ICON_BIN, ICON_COLO
 
 
 def pick_color_dialog():
-    """Open the OS colour picker and return the chosen colour."""
+    # Open the OS colour picker and return the chosen colour.
     try:
         import tkinter as tk
         from tkinter import colorchooser
@@ -25,7 +23,7 @@ def pick_color_dialog():
 
 
 def save_file_dialog():
-    """Open a Save-As dialog so the user can pick where to save."""
+    # Open a Save-As dialog so the user can pick where to save.
     try:
         import tkinter as tk
         from tkinter import filedialog

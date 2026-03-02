@@ -1,4 +1,4 @@
-"""Bezier curve tool - add control points by clicking, press Enter to commit."""
+# Bezier curve tool - add control points by clicking, press Enter to commit.
 
 import pygame
 from pynter.tools.tool import Tool
@@ -16,7 +16,7 @@ def factorial(n):
 
 
 def n_cr(n, r):
-    """Calculate how many ways to choose r items from n (combination formula)."""
+    # Calculate how many ways to choose r items from n (combination formula).
     return factorial(n) // (factorial(r) * factorial(n - r))
 
 

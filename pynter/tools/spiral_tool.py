@@ -1,4 +1,4 @@
-"""Spiral tool - draws evenly spaced spirals outward from center."""
+# Spiral tool - draws evenly spaced spirals outward from center.
 
 import math
 import pygame

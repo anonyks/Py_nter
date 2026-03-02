@@ -1,6 +1,4 @@
-"""
-Tool selection side-panel.
-"""
+# Tool selection side-panel.
 
 from enum import IntEnum
 import pygame
@@ -91,7 +89,7 @@ class ToolSelect:
         # Default tool
         self.select_tool(Tools.PENCIL)
 
-    def select_tool(self, tool: Tools):
+    def select_tool(self, tool):
         self.selected_tool = tool
         factory = {
             Tools.PENCIL: PencilTool,
