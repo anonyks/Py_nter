@@ -36,7 +36,7 @@ class EllipseTool(Tool):
         self.draw_single_ellipse(surface, cx, cy, rx, ry, color, width)
 
     def draw_single_ellipse(self, surface, cx, cy, rx, ry, color, w=1):
-        # Region 1: moving along x axis (slope is gentle)
+        # first half - go along x
         x, y = 0, ry
         rx2 = rx * rx
         ry2 = ry * ry
@@ -52,7 +52,7 @@ class EllipseTool(Tool):
                 d1 += 2 * ry2 * x - 2 * rx2 * y + ry2
             self.plot_4(surface, cx, cy, x, y, color, w)
 
-        # Region 2: moving along y axis (slope is steep)
+        # second half - go along y
         d2 = ry2 * (x * 2 + 1) ** 2 // 4 + rx2 * (y - 1) ** 2 - rx2 * ry2
         while y >= 0:
             y -= 1

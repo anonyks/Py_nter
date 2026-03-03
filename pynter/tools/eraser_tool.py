@@ -1,4 +1,4 @@
-# Eraser tool - draws white rectangles, size adjustable via scroll wheel.
+# Eraser tool - draws white over the canvas. Scroll to resize, Shift+scroll for opacity.
 
 import pygame
 from pynter.tools.tool import Tool
@@ -13,7 +13,7 @@ class EraserTool(Tool):
         self.opacity = 100           # erase strength 10-100%
         self.stroke_started = False
         self.last_pos = None
-        self.original_canvas = None  # snapshot before stroke for proper blending
+        self.original_canvas = None  # saved copy of canvas before this stroke starts
 
     def draw(self, surface):
         if pygame.mouse.get_pressed()[0]:
@@ -54,8 +54,10 @@ class EraserTool(Tool):
             rect = pygame.Rect(x - half, y - half, self.eraser_size, self.eraser_size)
             surface.fill(WHITE, rect)
         else:
-            # Blend each pixel from its ORIGINAL color toward white
-            # Going over the same pixel twice in one stroke gives same result
+            # Blend each pixel from its ORIGINAL colour toward white.
+            # t is 0.0 to 1.0 -- how much to erase (based on opacity slider).
+            # Going over the same pixel twice in one stroke gives the same result
+            # because we always blend from the original, not the current canvas.
             t = self.opacity / 100.0
             sx = max(0, x - half)
             sy = max(0, y - half)
@@ -70,7 +72,7 @@ class EraserTool(Tool):
                     surface.set_at((px, py), (r, gr, b))
 
     def erase_line(self, surface, start, end):
-        # Interpolate between two points for gap-free erasing.
+        # Draw between two points so there's no gaps in the erasing.
         x0, y0 = start
         x1, y1 = end
         dx = x1 - x0

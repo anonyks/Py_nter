@@ -78,7 +78,7 @@ class ColorSelect:
             if self.btn_clear_rect.collidepoint(g.mouse_pos):
                 self.clear_canvas()
 
-            # RGB picker button -> opens native OS colour dialog
+            # RGB picker -> opens color picker
             if self.btn_rgb_rect.collidepoint(g.mouse_pos):
                 col = pick_color_dialog()
                 if col is not None:
@@ -125,8 +125,9 @@ class ColorSelect:
         for i, rect in enumerate(self.color_rects):
             pygame.draw.rect(screen, g.COLORS[i], rect)
 
-        # Hover highlight
+        # hover effect
         if self.color_mouse_hover >= 0:
+            # transparent surface so it blends
             hover_surf = pygame.Surface(
                 (self.color_rects[self.color_mouse_hover].width,
                  self.color_rects[self.color_mouse_hover].height),
@@ -166,7 +167,7 @@ class ColorSelect:
              self.btn_save_rect.y + (self.btn_save_rect.height - icon_surf.get_height()) // 2),
         )
 
-        # RGB picker button (color picker icon)
+        # color picker button
         if self.btn_rgb_rect.collidepoint(g.mouse_pos):
             rgb_color = (49, 106, 197)
         else:
@@ -178,9 +179,9 @@ class ColorSelect:
              self.btn_rgb_rect.y + (self.btn_rgb_rect.height - rgb_icon.get_height()) // 2),
         )
 
-        # Toast notification (bottom-right, fades out)
+        # toast message
         if self.toast_timer > 0 and self.toast_text:
-            alpha = min(255, self.toast_timer * 6)  # quick fade-out in last ~40 frames
+            alpha = min(255, self.toast_timer * 6)  # fades out near the end
             toast_font = pygame.font.SysFont(None, 22)
             txt_surf = toast_font.render(self.toast_text, True, (255, 255, 255))
             pad_x, pad_y = 16, 10

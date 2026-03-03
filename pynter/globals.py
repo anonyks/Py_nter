@@ -1,4 +1,4 @@
-# Global state shared across the application.
+# Shared variables that all parts of the program use.
 
 import pygame
 
@@ -49,34 +49,34 @@ canvas_surface = None
 
 # Undo / Redo history
 MAX_UNDO = 50
-_undo_stack = []
-_redo_stack = []
+undo_stack = []
+redo_stack = []
 
 
 def push_undo_snapshot():
     # Save a copy of the canvas so we can undo later.
     if canvas_surface is None:
         return
-    _undo_stack.append(canvas_surface.copy())
-    if len(_undo_stack) > MAX_UNDO:
-        _undo_stack.pop(0)
-    _redo_stack.clear()
+    undo_stack.append(canvas_surface.copy())
+    if len(undo_stack) > MAX_UNDO:
+        undo_stack.pop(0)
+    redo_stack.clear()
 
 
 def undo():
     # Restore previous canvas state.
     global canvas_surface
-    if not _undo_stack or canvas_surface is None:
+    if not undo_stack or canvas_surface is None:
         return
-    _redo_stack.append(canvas_surface.copy())
-    canvas_surface.blit(_undo_stack.pop(), (0, 0))
+    redo_stack.append(canvas_surface.copy())
+    canvas_surface.blit(undo_stack.pop(), (0, 0))
 
 
 def redo():
     # Re-apply undone canvas state.
     global canvas_surface
-    if not _redo_stack or canvas_surface is None:
+    if not redo_stack or canvas_surface is None:
         return
-    _undo_stack.append(canvas_surface.copy())
-    canvas_surface.blit(_redo_stack.pop(), (0, 0))
+    undo_stack.append(canvas_surface.copy())
+    canvas_surface.blit(redo_stack.pop(), (0, 0))
 

@@ -1,6 +1,7 @@
-# Fill (flood-fill / paint bucket) tool.
+# Fill tool - paint bucket that floods an area with colour.
 
 import pygame
+# deque is like a list but faster for adding/removing from both ends
 from collections import deque
 from pynter.tools.tool import Tool
 from pynter import globals as g
@@ -46,7 +47,7 @@ class FillTool(Tool):
         if target_color == fill_color:
             return
 
-        # Lock surface for fast pixel access
+        # lock() speeds up pixel-by-pixel access on the surface
         surface.lock()
         visited = set()
         queue = deque()
@@ -63,4 +64,5 @@ class FillTool(Tool):
                         visited.add((nx, ny))
                         queue.append((nx, ny))
 
+        # unlock() when we're done so pygame can draw normally again
         surface.unlock()

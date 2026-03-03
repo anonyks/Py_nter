@@ -1,4 +1,4 @@
-# Bitmap utilities for tool icons.
+# Bitmap helpers for tool icons.
 # Each bitmap is a list of strings where '#' means a filled pixel
 # and '.' means transparent. Used to draw the small icons on tool buttons.
 
@@ -9,6 +9,7 @@ def bitmap_to_surface(bitmap, fg, scale=1):
     # Turn a bitmap (list of strings) into a pygame surface.
     rows = len(bitmap)
     cols = max(len(r) for r in bitmap)
+    # SRCALPHA lets the surface have per-pixel transparency
     surf = pygame.Surface((cols * scale, rows * scale), pygame.SRCALPHA)
     for r, row in enumerate(bitmap):
         for c, ch in enumerate(row):

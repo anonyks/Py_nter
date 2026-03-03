@@ -1,4 +1,5 @@
-# Mandala tool - draws with radial symmetry around a center point.
+# Mandala tool - draws with symmetry around a center point.
+# Whatever you draw gets copied and rotated around the center.
 
 import math
 import pygame
@@ -40,12 +41,13 @@ class MandalaTool(Tool):
             x = x1 + t * (x2 - x1)
             y = y1 + t * (y2 - y1)
             
-            # Apply symmetry
+            # Apply symmetry - rotate each point around the center
             for sym_i in range(self.symmetry_count):
                 angle = 2 * math.pi * sym_i / self.symmetry_count
                 cos_a = math.cos(angle)
                 sin_a = math.sin(angle)
-                
+
+                # Rotation formula: shift point to origin, rotate, shift back
                 rel_x = x - cx
                 rel_y = y - cy
                 new_x = cx + rel_x * cos_a - rel_y * sin_a

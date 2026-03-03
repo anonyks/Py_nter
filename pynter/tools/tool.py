@@ -1,5 +1,7 @@
 # Base class that all drawing tools inherit from.
 
+# ABC and abstractmethod force every tool to have the required methods.
+# If a tool forgets to define draw/handle_events/preview, Python will throw an error.
 from abc import ABC, abstractmethod
 import pygame
 

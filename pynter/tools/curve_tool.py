@@ -5,7 +5,7 @@ from pynter.tools.tool import Tool
 from pynter import globals as g
 
 
-# Math helpers for bezier curve calculation
+# Bezier curve helpers
 def factorial(n):
     if n <= 0:
         return 1
@@ -16,7 +16,7 @@ def factorial(n):
 
 
 def n_cr(n, r):
-    # Calculate how many ways to choose r items from n (combination formula).
+    # "n choose r" - how many ways to pick r items from n.
     return factorial(n) // (factorial(r) * factorial(n - r))
 
 

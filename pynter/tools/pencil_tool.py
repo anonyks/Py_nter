@@ -6,7 +6,7 @@ from pynter import globals as g
 
 
 class PencilTool(Tool):
-    RADIUS = 5
+    RADIUS = 5  # size of the pencil dot in pixels
 
     def __init__(self):
         self.stroke_started = False

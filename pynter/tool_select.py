@@ -153,8 +153,9 @@ class ToolSelect:
                      box.y + (box.height - label.get_height()) // 2),
                 )
 
-            # Hover highlight
+            # hover effect
             if i == self.tool_mouse_hover and self.selected_tool != Tools(i):
+                # transparent surface so it blends
                 hover_surf = pygame.Surface((box.width, box.height), pygame.SRCALPHA)
                 hover_surf.fill((255, 255, 255, 100))
                 screen.blit(hover_surf, box.topleft)
@@ -332,17 +333,19 @@ class ToolSelect:
                 screen.blit(txt, (20, info_y))
                 info_y += 16
 
-        # Credits (shown when no tool-specific info)
+        # show credits if nothing else to show
         else:
             self.draw_credits(screen, info_y)
 
     def draw_credits(self, screen, y):
-        # credit logo at the bottom
+        # credit logo at the bottom, only load it once
         if not hasattr(self, 'credit_img'):
             try:
+                # convert_alpha so transparency works
                 img = pygame.image.load("pynter/credit.png").convert_alpha()
                 w = g.SIDE_PANEL_WIDTH - 20
                 h = int(img.get_height() * (w / img.get_width()))
+                # resize to fit the panel
                 self.credit_img = pygame.transform.smoothscale(img, (w, h))
             except:
                 self.credit_img = None

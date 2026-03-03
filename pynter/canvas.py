@@ -1,4 +1,4 @@
-# Drawing canvas - owns the persistent surface that tools draw onto.
+# Drawing canvas - the main surface that tools draw onto.
 
 import pygame
 from pynter import globals as g

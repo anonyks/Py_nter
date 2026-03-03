@@ -138,7 +138,7 @@ class SelectBoxTool(Tool):
                 self.selected_surface = None
 
     def refit_rect(self):
-        # Re-centre the selection rect after a transform changes size.
+        # Keep the selection centred after rotating or scaling changes its size.
         if self.selected_surface is None:
             return
         cx = self.selected_rect.x + self.selected_rect.width // 2

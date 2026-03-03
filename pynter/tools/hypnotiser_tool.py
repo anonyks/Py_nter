@@ -1,4 +1,4 @@
-# Hypnotiser tool - draws expanding alternating-band rings (classic hypnotic spiral).
+# Hypnotiser tool - draws expanding rings that look like a hypnotic spiral.
 
 import pygame
 from pynter.tools.tool import Tool
@@ -10,8 +10,8 @@ class HypnotiserTool(Tool):
         self.is_dragging = False
         self.initial_pos = (0, 0)
         self.ring_spacing = 14      # base distance between ring centres
-        self.multiplier = 1.15    # gap growth multiplier
-        self.grow_radius = 0     # current expansion front
+        self.multiplier = 1.15    # each ring gap gets this much bigger than the last
+        self.grow_radius = 0     # how far the rings have expanded so far
         self.next_ring = 0       # radius where next ring should appear
         self.cur_gap = 0         # current gap 
         self.growth_rate = 1.15   # px per frame

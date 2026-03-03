@@ -29,8 +29,8 @@ class SpiralTool(Tool):
         color = g.COLORS[g.color_selected]
         points = []
         
-        # Generate spiral points: radius grows as angle increases
-        # Dragging further = more turns
+        # Archimedes spiral: radius = a * angle
+        # 'a' controls how far apart the arms are
         a = self.spacing / (2 * math.pi)
         angle_step = 0.1  # radians per step
         

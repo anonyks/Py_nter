@@ -6,8 +6,8 @@ from pynter import globals as g
 
 
 class TriangleTool(Tool):
-    # Click and drag to define the bounding box of a triangle.
-    # Base sits at the bottom, apex is centred at the top.
+    # Click and drag to set the size. The triangle fits inside the drag area.
+    # Top point is centred, base sits at the bottom.
 
     def __init__(self):
         self.is_dragging = False
@@ -21,7 +21,7 @@ class TriangleTool(Tool):
         y = min(sy, ey)
         w = abs(sx - ex)
         h = abs(sy - ey)
-        # apex top-centre, base-left, base-right
+        # top point, bottom-left, bottom-right
         return [
             (x + w // 2, y),       # top
             (x, y + h),            # bottom-left

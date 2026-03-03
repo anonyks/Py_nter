@@ -23,8 +23,8 @@ class TextTool(Tool):
             self.cached_font = pygame.font.SysFont(self.font_family, self.font_size)
         return self.cached_font
 
-    def invalidate_font(self):
-        # Clear font cache when size or family changes.
+    def reset_font(self):
+        # Clear the cached font so it gets re-created with the new size or family.
         self.cached_font = None
 
     def draw(self, surface):
@@ -66,12 +66,12 @@ class TextTool(Tool):
                     current_index = 0
                 new_index = (current_index + event.y) % len(self.font_families)
                 self.font_family = self.font_families[new_index]
-                self.invalidate_font()
+                self.reset_font()
             else:
                 # Regular scroll changes font size
                 self.font_size += event.y * 2
                 self.font_size = max(8, min(72, self.font_size))
-                self.invalidate_font()
+                self.reset_font()
 
     def preview(self, screen):
         if self.active and self.text:

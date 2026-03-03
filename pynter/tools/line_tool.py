@@ -11,7 +11,7 @@ class LineTool(Tool):
         self.start_pos = (0, 0)
         self.end_pos = (0, 0)
 
-    # Bresenham line algorithm - draws a pixel-perfect line between two points
+    # Bresenham line algorithm - draws a straight line one pixel at a time
     def draw_bresenham_line(self, surface, color):
         sx, sy = self.start_pos
         ex, ey = self.end_pos
@@ -27,7 +27,7 @@ class LineTool(Tool):
         surface.set_at((xk, yk), color)
 
         if 0 < dy <= dx:
-            # Case 1: 0 <= slope <= 1
+            # Gentle slope going up-right
             adx, ady = abs(dx), abs(dy)
             p = 2 * ady - adx
             for _ in range(sx, ex):
@@ -40,7 +40,7 @@ class LineTool(Tool):
                 surface.set_at((xk, yk), color)
 
         elif dy > dx > 0 or (dy > 0 and dx == 0):
-            # Case 2: slope > 1
+            # Steep slope going up-right (or straight up)
             adx, ady = abs(dx), abs(dy)
             p = 2 * adx - ady
             for _ in range(sy, ey):
@@ -53,7 +53,7 @@ class LineTool(Tool):
                 surface.set_at((xk, yk), color)
 
         elif dy >= -dx and dy <= 0:
-            # Case 3: -1 <= slope < 0
+            # Gentle slope going down-right
             adx, ady = abs(dx), abs(dy)
             p = 2 * ady - adx
             for _ in range(sx, ex):
@@ -66,7 +66,7 @@ class LineTool(Tool):
                 surface.set_at((xk, yk), color)
 
         elif dy < -dx:
-            # Case 4: slope < -1
+            # Steep slope going down-right
             adx, ady = abs(dx), abs(dy)
             p = 2 * adx - ady
             k = sy

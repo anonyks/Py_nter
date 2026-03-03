@@ -11,7 +11,7 @@ from pynter import globals as g
 BRUSH_CIRCLE = 0
 BRUSH_SPRAY = 1
 
-_TYPE_NAMES = ["Circle", "Spray"]
+TYPE_NAMES = ["Circle", "Spray"]
 
 
 class BrushTool(Tool):
@@ -19,7 +19,7 @@ class BrushTool(Tool):
         self.brush_size = 20.0
         self.brush_type = BRUSH_CIRCLE
         self.spray_density = 30      # how many dots per stamp (10-80)
-        self.tip_cache = {}
+        self.tip_cache = {}          # saves already-made brush images so we don't re-create them
         self.stroke_started = False
         self.last_pos = None
 
@@ -30,6 +30,7 @@ class BrushTool(Tool):
             return self.tip_cache[key]
 
         sz = int(self.brush_size) * 2
+        # SRCALPHA lets the surface have per-pixel transparency
         tip = pygame.Surface((sz, sz), pygame.SRCALPHA)
         half = sz // 2
         pygame.draw.circle(tip, color, (half, half), int(self.brush_size))
@@ -40,6 +41,7 @@ class BrushTool(Tool):
     # Spray tip - random dots each time, never cached
     def make_spray(self, color):
         sz = int(self.brush_size) * 2
+        # SRCALPHA lets the surface have per-pixel transparency
         tip = pygame.Surface((sz, sz), pygame.SRCALPHA)
         half = sz // 2
         r = int(self.brush_size)
@@ -49,6 +51,7 @@ class BrushTool(Tool):
         for _ in range(dot_count):
             dx = random.randint(-r, r)
             dy = random.randint(-r, r)
+            # only draw if the dot is inside the circle (x^2 + y^2 <= r^2)
             if dx * dx + dy * dy <= r * r:
                 tip.set_at((half + dx, half + dy), color)
         return tip
@@ -130,4 +133,4 @@ class BrushTool(Tool):
             self.stamp(screen, mx, my, g.COLORS[g.color_selected])
 
     def get_shape_name(self):
-        return _TYPE_NAMES[self.brush_type]
+        return TYPE_NAMES[self.brush_type]

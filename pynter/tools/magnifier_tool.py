@@ -6,8 +6,8 @@ from pynter import globals as g
 
 
 class MagnifierTool(Tool):
-    # Hover over the canvas to see a magnified preview around the cursor.
-    # Scroll wheel adjusts zoom level. Read-only, does not modify canvas.
+    # Hover over the canvas to see a zoomed-in view around the cursor.
+    # Scroll wheel adjusts zoom level. Doesn't change the canvas.
 
     def __init__(self):
         self.zoom = 4          # magnification factor (2x-10x)
@@ -39,6 +39,7 @@ class MagnifierTool(Tool):
             return
 
         src_rect = pygame.Rect(src_x, src_y, src_w, src_h)
+        # subsurface grabs a rectangular chunk of the canvas without copying the whole thing
         snippet = g.canvas_surface.subsurface(src_rect).copy()
 
         # Scale up -- box size = src_size * zoom (grows with zoom)
