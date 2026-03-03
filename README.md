@@ -43,7 +43,7 @@ python pynter.py
 - Shift + Scroll for secondary settings (spray density, eraser opacity, etc.)
 - Tab to switch brush type (circle/spray)
 - Ctrl+Z to undo, Ctrl+Y to redo
-- Right click on canvas to sample color (eyedropper)
+- Right click to show a size-preview outline (pencil, brush, eraser)
 
 
 ## Project Structure
@@ -76,10 +76,12 @@ python pynter.py
 │   ├── 🐍 canvas.py
 │   ├── 🐍 color_select.py
 │   ├── 🐍 globals.py
+│   ├── 📄 icon.ico
 │   ├── 🐍 main_window.py
 │   └── 🐍 tool_select.py
 ├── ⚙️ .gitignore
 ├── 📝 README.md
+├── 📄 icon.ico
 └── 🐍 pynter.py
 ```
 
