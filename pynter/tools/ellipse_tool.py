@@ -19,34 +19,29 @@ class EllipseTool(Tool):
         return xc, yc, rx, ry
 
     # Midpoint ellipse algorithm
-    # Plots 4 symmetric points per step
-    def plot_4(self, surface, cx, cy, x, y, color):
-        surface.set_at((cx + x, cy + y), color)
-        surface.set_at((cx - x, cy + y), color)
-        surface.set_at((cx + x, cy - y), color)
-        surface.set_at((cx - x, cy - y), color)
+    # each point is a small square for thickness
+    def plot_4(self, surface, cx, cy, x, y, color, w=1):
+        for px, py in [
+            (cx + x, cy + y), (cx - x, cy + y),
+            (cx + x, cy - y), (cx - x, cy - y),
+        ]:
+            if w <= 1:
+                surface.set_at((px, py), color)
+            else:
+                pygame.draw.rect(surface, color, (px - w // 2, py - w // 2, w, w))
 
     def draw_midpoint_ellipse(self, surface, cx, cy, rx, ry, color, width=1):
         if rx <= 0 or ry <= 0:
             return
+        self.draw_single_ellipse(surface, cx, cy, rx, ry, color, width)
 
-        if width <= 1:
-            self.draw_single_ellipse(surface, cx, cy, rx, ry, color)
-        else:
-            # Thick outline: draw concentric ellipses
-            half = width // 2
-            for i in range(-half, width - half):
-                arx = max(1, rx + i)
-                ary = max(1, ry + i)
-                self.draw_single_ellipse(surface, cx, cy, arx, ary, color)
-
-    def draw_single_ellipse(self, surface, cx, cy, rx, ry, color):
+    def draw_single_ellipse(self, surface, cx, cy, rx, ry, color, w=1):
         # Region 1: moving along x axis (slope is gentle)
         x, y = 0, ry
         rx2 = rx * rx
         ry2 = ry * ry
         d1 = ry2 - rx2 * ry + rx2 // 4
-        self.plot_4(surface, cx, cy, x, y, color)
+        self.plot_4(surface, cx, cy, x, y, color, w)
 
         while ry2 * x < rx2 * y:
             x += 1
@@ -55,7 +50,7 @@ class EllipseTool(Tool):
             else:
                 y -= 1
                 d1 += 2 * ry2 * x - 2 * rx2 * y + ry2
-            self.plot_4(surface, cx, cy, x, y, color)
+            self.plot_4(surface, cx, cy, x, y, color, w)
 
         # Region 2: moving along y axis (slope is steep)
         d2 = ry2 * (x * 2 + 1) ** 2 // 4 + rx2 * (y - 1) ** 2 - rx2 * ry2
@@ -66,7 +61,7 @@ class EllipseTool(Tool):
             else:
                 x += 1
                 d2 += 2 * ry2 * x - 2 * rx2 * y + rx2
-            self.plot_4(surface, cx, cy, x, y, color)
+            self.plot_4(surface, cx, cy, x, y, color, w)
 
     def draw(self, surface):
         pass
@@ -97,6 +92,10 @@ class EllipseTool(Tool):
                         g.canvas_surface, xc, yc, rx, ry,
                         g.COLORS[g.color_selected], g.line_width
                     )
+                    # or just use pygame's built-in:
+                    # rect = pygame.Rect(xc - rx, yc - ry, rx * 2, ry * 2)
+                    # pygame.draw.ellipse(g.canvas_surface, g.COLORS[g.color_selected],
+                    #     rect, g.line_width)
             self.is_dragging = False
 
     def preview(self, screen):

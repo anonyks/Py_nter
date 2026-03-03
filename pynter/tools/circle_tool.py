@@ -14,49 +14,33 @@ class CircleTool(Tool):
         self.radius = 0
 
     # Midpoint circle algorithm
-    # Plots 8 symmetric points per step using only integer math
-    def plot_8(self, surface, cx, cy, x, y, color):
+    # plots each point as a small square so bigger width = thicker stroke
+    def plot_8(self, surface, cx, cy, x, y, color, w=1):
         for px, py in [
             (cx + x, cy + y), (cx - x, cy + y),
             (cx + x, cy - y), (cx - x, cy - y),
             (cx + y, cy + x), (cx - y, cy + x),
             (cx + y, cy - x), (cx - y, cy - x),
         ]:
-            surface.set_at((px, py), color)
+            if w <= 1:
+                surface.set_at((px, py), color)
+            else:
+                pygame.draw.rect(surface, color, (px - w // 2, py - w // 2, w, w))
 
     def draw_midpoint_circle(self, surface, cx, cy, r, color, width=1):
         if r <= 0:
             return
-
-        if width <= 1:
-            # Single-pixel outline
-            x, y = 0, r
-            d = 1 - r
-            self.plot_8(surface, cx, cy, x, y, color)
-            while x < y:
-                x += 1
-                if d < 0:
-                    d += 2 * x + 1
-                else:
-                    y -= 1
-                    d += 2 * (x - y) + 1
-                self.plot_8(surface, cx, cy, x, y, color)
-        else:
-            # Thick outline: draw concentric circles from r-width/2 to r+width/2
-            r_inner = max(0, r - width // 2)
-            r_outer = r + (width - width // 2)
-            for ri in range(r_inner, r_outer):
-                x, y = 0, ri
-                d = 1 - ri
-                self.plot_8(surface, cx, cy, x, y, color)
-                while x < y:
-                    x += 1
-                    if d < 0:
-                        d += 2 * x + 1
-                    else:
-                        y -= 1
-                        d += 2 * (x - y) + 1
-                    self.plot_8(surface, cx, cy, x, y, color)
+        x, y = 0, r
+        d = 1 - r
+        self.plot_8(surface, cx, cy, x, y, color, width)
+        while x < y:
+            x += 1
+            if d < 0:
+                d += 2 * x + 1
+            else:
+                y -= 1
+                d += 2 * (x - y) + 1
+            self.plot_8(surface, cx, cy, x, y, color, width)
 
     def draw(self, surface):
         pass
@@ -96,6 +80,9 @@ class CircleTool(Tool):
                     self.initial_pos[0], self.initial_pos[1],
                     int(self.radius), g.COLORS[g.color_selected], g.line_width
                 )
+                # or just use pygame's built-in:
+                # pygame.draw.circle(g.canvas_surface, g.COLORS[g.color_selected],
+                #     self.initial_pos, int(self.radius), g.line_width)
             self.is_dragging = False
 
     def preview(self, screen):

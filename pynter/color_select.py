@@ -6,7 +6,7 @@ from pynter.bitmap import bitmap_to_surface, ICON_FILE_SAVE, ICON_BIN, ICON_COLO
 
 
 def pick_color_dialog():
-    # Open the OS colour picker and return the chosen colour.
+    # opens the colour picker
     try:
         import tkinter as tk
         from tkinter import colorchooser
@@ -23,7 +23,7 @@ def pick_color_dialog():
 
 
 def save_file_dialog():
-    # Open a Save-As dialog so the user can pick where to save.
+    # save-as dialog
     try:
         import tkinter as tk
         from tkinter import filedialog
@@ -47,10 +47,10 @@ class ColorSelect:
         self.btn_clear_rect = pygame.Rect(1000, 5, 40, 40)
         self.btn_rgb_rect = pygame.Rect(1050, 5, 40, 40)
         self.color_mouse_hover = -1
-        # Toast notification state
+        # toast stuff
         self.toast_text = ""
         self.toast_timer = 0
-        self.toast_duration = 180  # ~3 seconds at 120fps
+        self.toast_duration = 180  # about 3 seconds
 
     def init(self):
         g.color_selected = 0
@@ -106,25 +106,20 @@ class ColorSelect:
         self.toast_timer = self.toast_duration
 
     def update(self):
-        # Hover detection (continuous, no event needed)
+        # hover check
         self.color_mouse_hover = -1
         for i, rect in enumerate(self.color_rects):
             if rect.collidepoint(g.mouse_pos):
                 self.color_mouse_hover = i
                 break
 
-        # Toast auto-dismiss countdown
+        # count down the toast
         if self.toast_timer > 0:
             self.toast_timer -= 1
 
     def draw(self, screen):
-        # Top bar background
-        pygame.draw.rect(screen, (245, 245, 245), pygame.Rect(0, 0, g.SCREEN_WIDTH, 50))
-        pygame.draw.line(screen, (200, 200, 200), (0, 50), (g.SCREEN_WIDTH, 50))
-
-        # Current colour preview (shows the active colour)
-        pygame.draw.rect(screen, g.COLORS[g.color_selected], pygame.Rect(11, 11, 28, 28))
-        pygame.draw.rect(screen, (200, 200, 200), pygame.Rect(10, 10, 30, 30), 1)
+        # top bar bg - clean beige
+        pygame.draw.rect(screen, (236, 233, 216), pygame.Rect(0, 0, g.SCREEN_WIDTH, 50))
 
         # Colour swatches
         for i, rect in enumerate(self.color_rects):
@@ -140,7 +135,7 @@ class ColorSelect:
             hover_surf.fill((255, 255, 255, 153))  # semi-transparent white
             screen.blit(hover_surf, self.color_rects[self.color_mouse_hover].topleft)
 
-        # Selection border
+        # dark outline on selected swatch
         sel = self.color_rects[g.color_selected]
         pygame.draw.rect(
             screen, (0, 0, 0),
@@ -149,10 +144,9 @@ class ColorSelect:
 
         # Clear button
         if self.btn_clear_rect.collidepoint(g.mouse_pos):
-            clr_color = (230, 41, 55)
+            clr_color = (49, 106, 197)
         else:
             clr_color = (0, 0, 0)
-        pygame.draw.rect(screen, clr_color, self.btn_clear_rect, 2)
         clr_icon = bitmap_to_surface(ICON_BIN, clr_color, scale=1)
         screen.blit(
             clr_icon,
@@ -162,10 +156,9 @@ class ColorSelect:
 
         # Save button
         if self.btn_save_rect.collidepoint(g.mouse_pos):
-            btn_color = (230, 41, 55)
+            btn_color = (49, 106, 197)
         else:
             btn_color = (0, 0, 0)
-        pygame.draw.rect(screen, btn_color, self.btn_save_rect, 2)
         icon_surf = bitmap_to_surface(ICON_FILE_SAVE, btn_color, scale=1)
         screen.blit(
             icon_surf,
@@ -175,10 +168,9 @@ class ColorSelect:
 
         # RGB picker button (color picker icon)
         if self.btn_rgb_rect.collidepoint(g.mouse_pos):
-            rgb_color = (0, 121, 241)
+            rgb_color = (49, 106, 197)
         else:
             rgb_color = (0, 0, 0)
-        pygame.draw.rect(screen, rgb_color, self.btn_rgb_rect, 2)
         rgb_icon = bitmap_to_surface(ICON_COLOR_PICKER, rgb_color, scale=1)
         screen.blit(
             rgb_icon,

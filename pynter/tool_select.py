@@ -48,21 +48,12 @@ class Tools(IntEnum):
     MANDALA = 17
 
 
-# Tools that use brush/eraser size (shown as "Size: N")
-_SIZE_TOOLS = {Tools.BRUSH, Tools.ERASER}
-# Tools that use line width (shown as "Width: N")
-_WIDTH_TOOLS = {Tools.LINE, Tools.CURVE, Tools.RECTANGLE, Tools.SQUARE,
-                Tools.CIRCLE, Tools.ELLIPSE, Tools.TRIANGLE}
-
-
-# Labels shown on each tool button (used as fallback / tooltip)
-_TOOL_LABELS = [
+TOOL_LABELS = [
     "SEL", "TXT", "ERS", "FIL",
     "EYE", "MAG", "PEN", "BRU",
     "LIN", "CRV", "SQR", "REC",
     "CIR", "ELL", "TRI", "HYP",
 ]
-
 
 
 
@@ -72,6 +63,7 @@ class ToolSelect:
         self.selected_tool = Tools.PENCIL
         self.current_tool = None
         self.icon_cache = []
+        self.tool_mouse_hover = -1
 
     def init(self):
         self.tool_boxes = []
@@ -80,7 +72,7 @@ class ToolSelect:
             y = 60 + 60 * (i // 2)  # Start 40px higher
             self.tool_boxes.append(pygame.Rect(x, y, 40, 40))
 
-        # Pre-render icon surfaces
+        # load icon images
         self.icon_cache = [
             bitmap_to_surface(bmp, (40, 40, 40), scale=1)
             for bmp in TOOL_ICON_BITMAPS
@@ -129,42 +121,54 @@ class ToolSelect:
                     self.select_tool(Tools(i))
                     break
 
+    def update(self):
+        # check which tool button the mouse is over
+        self.tool_mouse_hover = -1
+        for i, box in enumerate(self.tool_boxes):
+            if box.collidepoint(g.mouse_pos):
+                self.tool_mouse_hover = i
+                break
+
     def draw(self, screen):
-        # Side panel background
-        pygame.draw.rect(screen, (245, 245, 245), pygame.Rect(0, 0, 140, g.SCREEN_HEIGHT))
-        pygame.draw.line(screen, (200, 200, 200), (140, 0), (140, g.SCREEN_HEIGHT))
+        # side panel bg - clean beige
+        pygame.draw.rect(screen, (236, 233, 216), pygame.Rect(0, 0, 140, g.SCREEN_HEIGHT))
 
         font = pygame.font.SysFont(None, 18)
         for i, box in enumerate(self.tool_boxes):
-            # Button background
-            pygame.draw.rect(screen, (220, 220, 220), box)
-            pygame.draw.rect(screen, (160, 160, 160), box, 1)
+            # button face
+            pygame.draw.rect(screen, (236, 233, 216), box)
 
-            # Pixel-art icon (centred in button)
+            # icon centered in button
             if i < len(self.icon_cache) and self.icon_cache[i]:
                 icon = self.icon_cache[i]
                 ix = box.x + (box.width - icon.get_width()) // 2
                 iy = box.y + (box.height - icon.get_height()) // 2
                 screen.blit(icon, (ix, iy))
             else:
-                # Fallback to text label
-                label = font.render(_TOOL_LABELS[i], True, (0, 0, 0))
+                # no icon, show text instead
+                label = font.render(TOOL_LABELS[i], True, (0, 0, 0))
                 screen.blit(
                     label,
                     (box.x + (box.width - label.get_width()) // 2,
                      box.y + (box.height - label.get_height()) // 2),
                 )
 
-            # Selected highlight
-            if self.selected_tool == Tools(i):
-                pygame.draw.rect(screen, (230, 41, 55), box, 2)
+            # Hover highlight
+            if i == self.tool_mouse_hover and self.selected_tool != Tools(i):
+                hover_surf = pygame.Surface((box.width, box.height), pygame.SRCALPHA)
+                hover_surf.fill((255, 255, 255, 100))
+                screen.blit(hover_surf, box.topleft)
 
-        # Size / Width info panel below the tool buttons
-        info_y = 60 + 60 * ((g.TOOL_BOX_ICONS_COUNT - 1) // 2) + 40 + 10  # Last tool bottom + small gap
+        # Info / hint text below the tool buttons
+        self.draw_info(screen)
+
+    def draw_info(self, screen):
+        # show tool-specific info + hints below the buttons
+        info_y = 60 + 60 * ((g.TOOL_BOX_ICONS_COUNT - 1) // 2) + 40 + 10
         info_font = pygame.font.SysFont(None, 22)
 
         # Show size for brush / eraser
-        if self.selected_tool in _SIZE_TOOLS and self.current_tool is not None:
+        if self.selected_tool in (Tools.BRUSH, Tools.ERASER) and self.current_tool is not None:
             if self.selected_tool == Tools.BRUSH:
                 val = int(getattr(self.current_tool, 'brush_size', 0))
                 if hasattr(self.current_tool, 'get_shape_name'):
@@ -210,7 +214,8 @@ class ToolSelect:
                 screen.blit(hint1_txt, (20, info_y))
 
         # Show width for shape tools
-        elif self.selected_tool in _WIDTH_TOOLS:
+        elif self.selected_tool in (Tools.LINE, Tools.CURVE, Tools.RECTANGLE, Tools.SQUARE,
+                                       Tools.CIRCLE, Tools.ELLIPSE, Tools.TRIANGLE):
             w_txt = info_font.render(f"Width: {g.line_width}", True, (60, 60, 60))
             screen.blit(w_txt, (20, info_y))
             info_y += 20
@@ -326,5 +331,23 @@ class ToolSelect:
                 txt = tiny.render(line, True, (100, 100, 100))
                 screen.blit(txt, (20, info_y))
                 info_y += 16
+
+        # Credits (shown when no tool-specific info)
+        else:
+            self.draw_credits(screen, info_y)
+
+    def draw_credits(self, screen, y):
+        # credit logo at the bottom
+        if not hasattr(self, 'credit_img'):
+            try:
+                img = pygame.image.load("pynter/credit.png").convert_alpha()
+                w = g.SIDE_PANEL_WIDTH - 20
+                h = int(img.get_height() * (w / img.get_width()))
+                self.credit_img = pygame.transform.smoothscale(img, (w, h))
+            except:
+                self.credit_img = None
+        if self.credit_img:
+            x = (g.SIDE_PANEL_WIDTH - self.credit_img.get_width()) // 2
+            screen.blit(self.credit_img, (x, y))
 
 
