@@ -97,15 +97,7 @@ class MainWindowGUI:
         m = 6
         self.screen.fill((245, 245, 245))
 
-        # keep drawing inside the canvas area
-        clip = pygame.Rect(
-            g.SIDE_PANEL_WIDTH + m, g.TOOLBAR_HEIGHT + m,
-            g.SCREEN_WIDTH - g.SIDE_PANEL_WIDTH - m * 2,
-            g.SCREEN_HEIGHT - g.TOOLBAR_HEIGHT - m * 2,
-        )
-        g.canvas_surface.set_clip(clip)
         self.canvas.draw(self.screen)
-        g.canvas_surface.set_clip(None)
 
         # draw the panels
         self.color_select.draw(self.screen)
