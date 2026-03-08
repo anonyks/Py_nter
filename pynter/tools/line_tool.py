@@ -1,4 +1,4 @@
-# Line tool - drawn on mouse release. Uses pygame.draw.line for adjustable width.
+# line tool - drawn on mouse release. uses pygame.draw.line for adjustable width
 
 import pygame
 from pynter.tools.tool import Tool
@@ -11,12 +11,14 @@ class LineTool(Tool):
         self.start_pos = (0, 0)
         self.end_pos = (0, 0)
 
-    # Bresenham line algorithm - draws a straight line one pixel at a time
+    # bresenham line algorithm - draws a straight line one pixel at a time
+    # uses a decision variable p to decide when to step diagonally
     def draw_bresenham_line(self, surface, color):
         sx, sy = self.start_pos
         ex, ey = self.end_pos
 
-        # Make sure we always draw left to right
+        # make sure we always draw left to right
+        # tuple swap trick: swaps start and end in one line
         if sx > ex:
             sx, sy, ex, ey = ex, ey, sx, sy
 
@@ -27,8 +29,9 @@ class LineTool(Tool):
         surface.set_at((xk, yk), color)
 
         if 0 < dy <= dx:
-            # Gentle slope going up-right
+            # gentle slope going up-right
             adx, ady = abs(dx), abs(dy)
+            # bresenham decision variable: decides if next pixel steps diagonally
             p = 2 * ady - adx
             for _ in range(sx, ex):
                 if p < 0:
@@ -40,7 +43,7 @@ class LineTool(Tool):
                 surface.set_at((xk, yk), color)
 
         elif dy > dx > 0 or (dy > 0 and dx == 0):
-            # Steep slope going up-right (or straight up)
+            # steep slope going up-right (or straight up)
             adx, ady = abs(dx), abs(dy)
             p = 2 * adx - ady
             for _ in range(sy, ey):
@@ -53,7 +56,7 @@ class LineTool(Tool):
                 surface.set_at((xk, yk), color)
 
         elif dy >= -dx and dy <= 0:
-            # Gentle slope going down-right
+            # gentle slope going down-right
             adx, ady = abs(dx), abs(dy)
             p = 2 * ady - adx
             for _ in range(sx, ex):
@@ -66,7 +69,7 @@ class LineTool(Tool):
                 surface.set_at((xk, yk), color)
 
         elif dy < -dx:
-            # Steep slope going down-right
+            # steep slope going down-right
             adx, ady = abs(dx), abs(dy)
             p = 2 * adx - ady
             k = sy
@@ -82,8 +85,7 @@ class LineTool(Tool):
 
 
     def draw(self, surface):
-        # Commit line on mouse release (handled via events)
-        pass
+        pass  # committed on mouse release
 
     def handle_events(self, event):
         if event is None:

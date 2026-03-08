@@ -1,4 +1,4 @@
-# Square tool - drag to draw a square where all sides are equal.
+# square tool - drag to draw a square where all sides are equal
 
 import pygame
 from pynter.tools.tool import Tool
@@ -12,15 +12,15 @@ class SquareTool(Tool):
         self.end_pos = (0, 0)
 
     def get_square(self):
-        # Make height equal to width so it's always a perfect square
-        # The square grows from start_pos in the direction you drag
+        # force height = width so its always a perfect square
+        # grows from start_pos in the direction you drag
         sx, sy = self.start_pos
         ex, ey = self.end_pos
         dx = ex - sx
         dy = ey - sy
-        # Use the larger distance as the side length
+        # use the larger distance as side length
         side = max(abs(dx), abs(dy))
-        # Figure out which direction to grow
+        # figure out which direction to grow
         if dx >= 0:
             x = sx
         else:

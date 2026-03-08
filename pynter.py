@@ -1,5 +1,5 @@
-# Pynter - entry point
-# Run:  python pynter.py
+# pynter - entry point
+# run:  python pynter.py
 
 from pynter.main_window import MainWindowGUI
 
@@ -10,9 +10,10 @@ def main():
     try:
         app.start_loop()
     except KeyboardInterrupt:
-        pass  # user pressed Ctrl+C, just quit
+        pass  # user pressed ctrl+c, just quit
     finally:
-        app.shutdown()  # clean up pygame
+        # finally runs even if theres an error, so pygame always gets cleaned up
+        app.shutdown()
 
 
 if __name__ == "__main__":

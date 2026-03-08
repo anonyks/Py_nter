@@ -1,4 +1,4 @@
-# Triangle tool - drag to draw an equilateral-ish triangle outline.
+# triangle tool - drag to draw an equilateral-ish triangle outline
 
 import pygame
 from pynter.tools.tool import Tool
@@ -6,8 +6,8 @@ from pynter import globals as g
 
 
 class TriangleTool(Tool):
-    # Click and drag to set the size. The triangle fits inside the drag area.
-    # Top point is centred, base sits at the bottom.
+    # click and drag to set the size
+    # top point is centred, base sits at the bottom
 
     def __init__(self):
         self.is_dragging = False
@@ -21,7 +21,7 @@ class TriangleTool(Tool):
         y = min(sy, ey)
         w = abs(sx - ex)
         h = abs(sy - ey)
-        # top point, bottom-left, bottom-right
+        # top, bottom-left, bottom-right
         return [
             (x + w // 2, y),       # top
             (x, y + h),            # bottom-left
@@ -29,7 +29,7 @@ class TriangleTool(Tool):
         ]
 
     def draw(self, surface):
-        pass  # committed on release
+        pass  # committed on mouse release
 
     def handle_events(self, event):
         if event is None:
@@ -51,6 +51,7 @@ class TriangleTool(Tool):
                 self.end_pos = g.mouse_pos
                 pts = self.get_triangle_points()
                 if g.canvas_surface is not None and len(pts) == 3:
+                    # last arg = outline thickness (0 would fill the triangle solid)
                     pygame.draw.polygon(
                         g.canvas_surface, g.COLORS[g.color_selected],
                         pts, g.line_width,

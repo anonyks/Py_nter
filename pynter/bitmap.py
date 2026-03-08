@@ -1,20 +1,23 @@
-# Bitmap helpers for tool icons.
-# Each bitmap is a list of strings where '#' means a filled pixel
-# and '.' means transparent. Used to draw the small icons on tool buttons.
+# bitmap helpers for tool icons
+# each bitmap is a list of strings where '#' = filled pixel
+# and '.' = transparent. used for the small icons on tool buttons
 
 import pygame
 
 
 def bitmap_to_surface(bitmap, fg, scale=1):
-    # Turn a bitmap (list of strings) into a pygame surface.
+    # turn a bitmap (list of strings) into a pygame surface
     rows = len(bitmap)
+    # find the widest row (generator expression feeds each row length into max)
     cols = max(len(r) for r in bitmap)
-    # SRCALPHA lets the surface have per-pixel transparency
+    # SRCALPHA = per-pixel transparency
     surf = pygame.Surface((cols * scale, rows * scale), pygame.SRCALPHA)
+    # enumerate gives (row_index, row_string) so we know which row we're on
     for r, row in enumerate(bitmap):
         for c, ch in enumerate(row):
             if ch == "#":
                 if scale == 1:
+                    # *fg unpacks the rgb tuple, 255 = full opacity
                     surf.set_at((c, r), (*fg, 255))
                 else:
                     pygame.draw.rect(
@@ -24,9 +27,9 @@ def bitmap_to_surface(bitmap, fg, scale=1):
     return surf
 
 
-# Shared icon bitmaps
+# shared icon bitmaps
 
-# Color picker icon - 16x16 (artist palette)
+# Color picker icon - 16x16
 ICON_COLOR_PICKER = [
     "................",
     ".....######.....",
@@ -86,7 +89,7 @@ ICON_BIN = [
     "................",
 ]
 
-# Tool icon bitmaps (16x16 each, one per tool button)
+# tool icon bitmaps (16x16 each, one per tool button)
 TOOL_ICON_BITMAPS = [
     # 0 - SEL (#227# SELECT - dashed selection box)
     [

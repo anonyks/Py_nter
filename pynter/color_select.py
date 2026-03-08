@@ -1,4 +1,4 @@
-# Color palette panel at the top of the window.
+# color palette panel at the top of the window
 
 import pygame
 from pynter import globals as g
@@ -6,15 +6,16 @@ from pynter.bitmap import bitmap_to_surface, ICON_FILE_SAVE, ICON_BIN, ICON_COLO
 
 
 def pick_color_dialog():
-    # opens the colour picker
+    # opens the colour picker dialog
     try:
         import tkinter as tk
         from tkinter import colorchooser
         root = tk.Tk()
-        root.withdraw()
+        root.withdraw()  # hides the ugly empty tkinter window that pops up
         result = colorchooser.askcolor(title="Pick a colour")
         root.destroy()
         if result and result[0] is not None:
+            # unpack rgb floats into ints (gr not g because g is our globals module)
             r, gr, b = (int(v) for v in result[0])
             return pygame.Color(r, gr, b)
     except Exception:
@@ -23,12 +24,12 @@ def pick_color_dialog():
 
 
 def save_file_dialog():
-    # save-as dialog
+    # opens save-as dialog
     try:
         import tkinter as tk
         from tkinter import filedialog
         root = tk.Tk()
-        root.withdraw()
+        root.withdraw()  # hide the tkinter root window
         path = filedialog.asksaveasfilename(
             title="Save image as",
             defaultextension=".png",
@@ -50,12 +51,13 @@ class ColorSelect:
         # toast stuff
         self.toast_text = ""
         self.toast_timer = 0
-        self.toast_duration = 180  # about 3 seconds
+        self.toast_duration = 180  # ~3 seconds at 60fps
 
     def init(self):
         g.color_selected = 0
         self.color_rects = []
         for i in range(g.MAX_COLORS_COUNT):
+            # 210px offset from left, each swatch is 30px wide + 2px gap between them
             x = 210 + 30 * i + 2 * i
             self.color_rects.append(pygame.Rect(x, 10, 30, 30))
 
@@ -78,7 +80,7 @@ class ColorSelect:
             if self.btn_clear_rect.collidepoint(g.mouse_pos):
                 self.clear_canvas()
 
-            # RGB picker -> opens color picker
+            # RGB picker -> opens colour picker dialog
             if self.btn_rgb_rect.collidepoint(g.mouse_pos):
                 col = pick_color_dialog()
                 if col is not None:
@@ -91,7 +93,7 @@ class ColorSelect:
         path = save_file_dialog()
         if path:
             pygame.image.save(g.canvas_surface, path)
-            # Show short filename in toast
+        # Show short filename in toast
             import os
             name = os.path.basename(path)
             self.show_toast(f"Saved: {name}")
@@ -118,37 +120,40 @@ class ColorSelect:
             self.toast_timer -= 1
 
     def draw(self, screen):
-        # top bar bg - clean beige
+        # top bar bg - beige
         pygame.draw.rect(screen, (236, 233, 216), pygame.Rect(0, 0, g.SCREEN_WIDTH, 50))
 
-        # Colour swatches
+        # colour swatches
         for i, rect in enumerate(self.color_rects):
             pygame.draw.rect(screen, g.COLORS[i], rect)
 
         # hover effect
         if self.color_mouse_hover >= 0:
-            # transparent surface so it blends
+            # SRCALPHA so we get transparency on this overlay
             hover_surf = pygame.Surface(
                 (self.color_rects[self.color_mouse_hover].width,
                  self.color_rects[self.color_mouse_hover].height),
                 pygame.SRCALPHA,
             )
-            hover_surf.fill((255, 255, 255, 153))  # semi-transparent white
+            # 4th number = alpha (153/255 ≈ 60% see-through)
+            hover_surf.fill((255, 255, 255, 153))
             screen.blit(hover_surf, self.color_rects[self.color_mouse_hover].topleft)
 
         # dark outline on selected swatch
+        # -2 and +4 make the outline 2px bigger on each side
         sel = self.color_rects[g.color_selected]
         pygame.draw.rect(
             screen, (0, 0, 0),
-            pygame.Rect(sel.x - 2, sel.y - 2, sel.width + 4, sel.height + 4), 2,
+            pygame.Rect(sel.x - 2, sel.y - 2, sel.width + 4, sel.height + 4), 2,  # last 2 = border thickness
         )
 
         # Clear button
         if self.btn_clear_rect.collidepoint(g.mouse_pos):
-            clr_color = (49, 106, 197)
+            clr_color = (49, 106, 197)  # windows xp selection blue for hover
         else:
             clr_color = (0, 0, 0)
         clr_icon = bitmap_to_surface(ICON_BIN, clr_color, scale=1)
+        # center the icon inside the button: (button_size - icon_size) / 2
         screen.blit(
             clr_icon,
             (self.btn_clear_rect.x + (self.btn_clear_rect.width - clr_icon.get_width()) // 2,
@@ -157,7 +162,7 @@ class ColorSelect:
 
         # Save button
         if self.btn_save_rect.collidepoint(g.mouse_pos):
-            btn_color = (49, 106, 197)
+            btn_color = (49, 106, 197)  # xp blue on hover
         else:
             btn_color = (0, 0, 0)
         icon_surf = bitmap_to_surface(ICON_FILE_SAVE, btn_color, scale=1)
@@ -169,7 +174,7 @@ class ColorSelect:
 
         # color picker button
         if self.btn_rgb_rect.collidepoint(g.mouse_pos):
-            rgb_color = (49, 106, 197)
+            rgb_color = (49, 106, 197)  # xp blue on hover
         else:
             rgb_color = (0, 0, 0)
         rgb_icon = bitmap_to_surface(ICON_COLOR_PICKER, rgb_color, scale=1)
@@ -181,8 +186,8 @@ class ColorSelect:
 
         # toast message
         if self.toast_timer > 0 and self.toast_text:
-            alpha = min(255, self.toast_timer * 6)  # fades out near the end
-            toast_font = pygame.font.SysFont(None, 22)
+            alpha = min(255, self.toast_timer * 6)  # fade out near the end
+            toast_font = pygame.font.SysFont(None, 22)  # None = default system font
             txt_surf = toast_font.render(self.toast_text, True, (255, 255, 255))
             pad_x, pad_y = 16, 10
             tw = txt_surf.get_width() + pad_x * 2
@@ -190,7 +195,7 @@ class ColorSelect:
             tx = g.SCREEN_WIDTH - tw - 20
             ty = g.SCREEN_HEIGHT - th - 20
             bg = pygame.Surface((tw, th), pygame.SRCALPHA)
-            bg.fill((40, 40, 40, alpha))
+            bg.fill((40, 40, 40, alpha))  # dark bg with fading alpha
             screen.blit(bg, (tx, ty))
-            txt_surf.set_alpha(alpha)
+            txt_surf.set_alpha(alpha)  # fade the text too
             screen.blit(txt_surf, (tx + pad_x, ty + pad_y))

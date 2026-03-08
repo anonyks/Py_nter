@@ -1,4 +1,4 @@
-# Hypnotiser tool - draws expanding rings that look like a hypnotic spiral.
+# hypnotiser tool - draws expanding rings that look like a hypnotic spiral
 
 import pygame
 from pynter.tools.tool import Tool
@@ -14,7 +14,7 @@ class HypnotiserTool(Tool):
         self.grow_radius = 0     # how far the rings have expanded so far
         self.next_ring = 0       # radius where next ring should appear
         self.cur_gap = 0         # current gap 
-        self.growth_rate = 1.15   # px per frame
+        self.growth_rate = 1.15   # pixels the expansion front moves outward per frame
 
     def draw(self, surface):
         mx, my = g.mouse_pos
@@ -26,10 +26,11 @@ class HypnotiserTool(Tool):
         self.grow_radius += self.growth_rate
         color = g.COLORS[g.color_selected]
 
-        # Draw rings as expansion front reaches them; gap grows by multiplier each ring
+        # draw rings as expansion front reaches them
+        # each gap grows by multiplier so rings spread out exponentially
         while self.next_ring <= self.grow_radius:
             r = int(self.next_ring)
-            band = max(1, int(self.cur_gap) // 2)
+            band = max(1, int(self.cur_gap) // 2)  # ring thickness, at least 1px
             if r > 0:
                 pygame.draw.circle(
                     surface, color, self.initial_pos, r, band
@@ -50,6 +51,7 @@ class HypnotiserTool(Tool):
             self.is_dragging = True
             self.initial_pos = (mx, my)
             self.grow_radius = 0
+            # float so multiplier math works right (int would truncate)
             self.cur_gap = float(self.ring_spacing)
             self.next_ring = self.cur_gap
         elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
@@ -68,7 +70,7 @@ class HypnotiserTool(Tool):
     def preview(self, screen):
         mx, my = g.mouse_pos
         color = g.COLORS[g.color_selected]
-        # Show a small preview at cursor (3 rings only)
+        # show a small preview at cursor (3 rings)
         gap = float(self.ring_spacing)
         r = gap * 0.5
         for _ in range(3):

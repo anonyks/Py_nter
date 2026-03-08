@@ -1,4 +1,4 @@
-# Eye-dropper tool - click to pick a colour from the canvas.
+# eyedropper tool - click to pick a colour from the canvas
 
 import pygame
 from pynter.tools.tool import Tool
@@ -6,13 +6,13 @@ from pynter import globals as g
 
 
 class EyeDropperTool(Tool):
-    # Click on the canvas to pick the colour under the cursor.
+    # click on canvas to grab the colour under cursor
 
     def __init__(self):
         self.sampled_color = None
 
     def draw(self, surface):
-        pass  # read-only
+        pass  # doesnt draw anything
 
     def handle_events(self, event):
         if event is None:
@@ -39,14 +39,14 @@ class EyeDropperTool(Tool):
 
     @staticmethod
     def match_palette(color):
-        # Find the closest palette colour and select it.
+        # find the closest palette colour and select it
         best_idx = 0
-        # Start with the biggest possible distance, so any real match beats it
-        best_dist = float("inf")
+        best_dist = float("inf")  # start with biggest possible distance so any real match beats it
         for i, pc in enumerate(g.COLORS):
             dr = color.r - pc.r
             dg = color.g - pc.g
             db = color.b - pc.b
+            # squared distance in rgb space (skip sqrt since we only need to compare, not get actual distance)
             dist = dr * dr + dg * dg + db * db
             if dist < best_dist:
                 best_dist = dist

@@ -1,4 +1,4 @@
-# Fill tool - paint bucket that floods an area with colour.
+# fill tool - paint bucket that floods an area with colour
 
 import pygame
 # deque is like a list but faster for adding/removing from both ends
@@ -8,12 +8,11 @@ from pynter import globals as g
 
 
 class FillTool(Tool):
-    # Click anywhere on the canvas to fill the clicked area
-    # with the selected colour. Only fills pixels that match
-    # the exact colour you clicked on.
+    # click anywhere to fill that area with selected colour
+    # only fills pixels that match the exact colour you clicked on
 
     def draw(self, surface):
-        pass  # instant commit
+        pass  # happens instantly on click
 
     def handle_events(self, event):
         if event is None:
@@ -36,7 +35,7 @@ class FillTool(Tool):
 
     @staticmethod
     def flood_fill(surface, x, y):
-        # Fill the area starting from pixel (x, y) outward.
+        # fill outward from (x, y) pixel by pixel
         w, h = surface.get_size()
         if x < 0 or x >= w or y < 0 or y >= h:
             return
@@ -57,6 +56,7 @@ class FillTool(Tool):
         while queue:
             cx, cy = queue.popleft()
             surface.set_at((cx, cy), fill_color)
+            # check 4 neighbors: right, left, down, up
             for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
                 nx, ny = cx + dx, cy + dy
                 if 0 <= nx < w and 0 <= ny < h and (nx, ny) not in visited:

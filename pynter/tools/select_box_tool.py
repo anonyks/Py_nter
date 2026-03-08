@@ -1,4 +1,4 @@
-# Select-box tool - select a region, move it, press Enter to commit.
+# select box tool - select a region, move it, press enter to commit
 
 import pygame
 from pynter.tools.tool import Tool
@@ -25,7 +25,8 @@ class SelectBoxTool(Tool):
 
     @staticmethod
     def draw_dashed_rect(surface, rect):
-        # Draw a dashed rectangle outline.
+        # dashed rectangle outline
+        # dash pattern: 4 pixels on, 4 pixels off (step 8, draw first 4)
         color = (0, 0, 0)
         # Top & bottom edges
         for i in range(0, rect.width, 8):
@@ -49,7 +50,7 @@ class SelectBoxTool(Tool):
                         surface.set_at((rx, py), color)
 
     def draw(self, surface):
-        pass  # committed via Enter
+        pass  # committed on enter
 
     def handle_events(self, event):
         if event is None:
@@ -83,7 +84,8 @@ class SelectBoxTool(Tool):
                 rect = self.get_rect()
                 if rect.width > 0 and rect.height > 0 and g.canvas_surface is not None:
                     g.push_undo_snapshot()
-                    # Capture selected region
+                    # subsurface grabs a rectangular chunk without copying everything
+                    # .copy() makes it a separate image so changing canvas doesnt affect it
                     self.selected_surface = g.canvas_surface.subsurface(rect).copy()
                     self.selected_rect = rect.copy()
                     # Clear region on canvas
@@ -103,7 +105,7 @@ class SelectBoxTool(Tool):
 
             elif event.key == pygame.K_r:
                 # Rotate 90 deg CW  (Shift+R = CCW)
-                mods = pygame.key.get_mods()
+                mods = pygame.key.get_mods()  # get_mods() = which modifier keys are held right now
                 if mods & pygame.KMOD_SHIFT:
                     self.selected_surface = pygame.transform.rotate(self.selected_surface, 90)
                 else:
@@ -111,11 +113,11 @@ class SelectBoxTool(Tool):
                 self.refit_rect()
 
             elif event.key == pygame.K_h:
-                # Flip horizontal
+                # flip(True, False) = mirror horizontally (left-right swap)
                 self.selected_surface = pygame.transform.flip(self.selected_surface, True, False)
 
             elif event.key == pygame.K_v:
-                # Flip vertical
+                # flip(False, True) = mirror vertically (top-bottom swap)
                 self.selected_surface = pygame.transform.flip(self.selected_surface, False, True)
 
             elif event.key in (pygame.K_EQUALS, pygame.K_PLUS, pygame.K_KP_PLUS):
@@ -133,12 +135,12 @@ class SelectBoxTool(Tool):
                 self.refit_rect()
 
             elif event.key == pygame.K_ESCAPE:
-                # Cancel -- restore original region
+                # cancel - restore original region
                 self.selected = False
                 self.selected_surface = None
 
     def refit_rect(self):
-        # Keep the selection centred after rotating or scaling changes its size.
+        # keep selection centred after rotating/scaling changes its size
         if self.selected_surface is None:
             return
         cx = self.selected_rect.x + self.selected_rect.width // 2

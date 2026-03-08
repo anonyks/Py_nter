@@ -1,4 +1,4 @@
-# Circle tool - drag to set center & radius. Uses midpoint circle algorithm.
+# circle tool - drag to set center and radius. uses midpoint circle algorithm
 
 import math
 import pygame
@@ -13,7 +13,8 @@ class CircleTool(Tool):
         self.final_pos = (0, 0)
         self.radius = 0
 
-    # Midpoint circle algorithm
+    # midpoint circle algorithm
+    # only computes 1/8 of the circle then mirrors it 8 ways
     # plots each point as a small square so bigger width = thicker stroke
     def plot_8(self, surface, cx, cy, x, y, color, w=1):
         for px, py in [
@@ -31,13 +32,16 @@ class CircleTool(Tool):
         if r <= 0:
             return
         x, y = 0, r
-        d = 1 - r
+        d = 1 - r  # decision variable: starts at 1 - radius (from the midpoint circle derivation)
         self.plot_8(surface, cx, cy, x, y, color, width)
+        # only compute the arc from 12 oclock to 45 degrees, plot_8 mirrors the rest
         while x < y:
             x += 1
             if d < 0:
+                # pixel is inside the circle, only step x
                 d += 2 * x + 1
             else:
+                # pixel went outside, step x and shrink y to stay near the edge
                 y -= 1
                 d += 2 * (x - y) + 1
             self.plot_8(surface, cx, cy, x, y, color, width)
@@ -68,6 +72,7 @@ class CircleTool(Tool):
             self.final_pos = (mx, my)
             dx = self.final_pos[0] - self.initial_pos[0]
             dy = self.final_pos[1] - self.initial_pos[1]
+            # hypot = sqrt(dx² + dy²) but shorter
             self.radius = math.hypot(dx, dy)
         elif event.type == pygame.MOUSEBUTTONUP and event.button == 1 and self.is_dragging:
             self.final_pos = (mx, my)

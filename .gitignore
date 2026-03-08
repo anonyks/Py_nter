@@ -1,9 +1,6 @@
 ﻿__pycache__/
 *.pyc
-*.png
-*.fixed
 pdfs/
 desktop.ini
 gui_bckup.py
-
-!pynter/credit.png
+*.ipynb

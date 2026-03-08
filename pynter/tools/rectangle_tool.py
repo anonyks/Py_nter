@@ -1,4 +1,4 @@
-# Rectangle tool - drag to draw a rectangle outline.
+# rectangle tool - drag to draw a rectangle outline
 
 import pygame
 from pynter.tools.tool import Tool
@@ -12,7 +12,7 @@ class RectangleTool(Tool):
         self.end_pos = (0, 0)
 
     def get_rect(self):
-        # Build a rect from the drag start and end positions
+        # build rect from drag start and end
         sx, sy = self.start_pos
         ex, ey = self.end_pos
         x = min(sx, ex)
@@ -46,6 +46,7 @@ class RectangleTool(Tool):
             if g.canvas_surface is not None:
                 rect = self.get_rect()
                 if rect.width > 0 and rect.height > 0:
+                    # last arg = border thickness (0 would fill the whole rect)
                     pygame.draw.rect(
                         g.canvas_surface, g.COLORS[g.color_selected], rect, g.line_width
                     )

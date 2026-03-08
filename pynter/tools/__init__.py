@@ -1,4 +1,4 @@
-# Import all tools so other files can just do: from pynter.tools import PencilTool, etc.
+# import all tools so other files can just do: from pynter.tools import PencilTool etc
 
 from pynter.tools.tool import Tool
 from pynter.tools.pencil_tool import PencilTool
@@ -20,7 +20,7 @@ from pynter.tools.eyedropper_tool import EyeDropperTool
 from pynter.tools.text_tool import TextTool
 from pynter.tools.magnifier_tool import MagnifierTool
 
-# __all__ tells Python which names to export when someone does "from pynter.tools import *"
+# __all__ tells python which names to export when someone does "from pynter.tools import *"
 __all__ = [
     "Tool",
     "PencilTool",

@@ -1,4 +1,4 @@
-# Spiral tool - draws evenly spaced spirals outward from center.
+# spiral tool - draws evenly spaced spirals outward from center
 
 import math
 import pygame
@@ -29,10 +29,11 @@ class SpiralTool(Tool):
         color = g.COLORS[g.color_selected]
         points = []
         
-        # Archimedes spiral: radius = a * angle
-        # 'a' controls how far apart the arms are
+        # archimedes spiral: radius grows linearly with angle
+        # a controls how far apart the arms are
         a = self.spacing / (2 * math.pi)
-        angle_step = 0.1  # radians per step
+        # 0.1 radians per step (~6 degrees) - smaller = smoother but more points to draw
+        angle_step = 0.1
         
         angle = 0
         while True:

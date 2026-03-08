@@ -1,8 +1,8 @@
-# Shared variables that all parts of the program use.
+# shared state that everything uses
 
 import pygame
 
-# Constants
+# constants
 MAX_COLORS_COUNT = 23
 TOOL_BOX_ICONS_COUNT = 18
 
@@ -12,7 +12,7 @@ SCREEN_HEIGHT = 720
 TOOLBAR_HEIGHT = 50       # top color bar height
 SIDE_PANEL_WIDTH = 140    # left tool panel width
 
-# Color palette
+# color palette
 COLORS = [
     pygame.Color(245, 245, 245),  # RAYWHITE
     pygame.Color(253, 249, 0),    # YELLOW
@@ -39,44 +39,48 @@ COLORS = [
     pygame.Color(0, 0, 0),        # BLACK
 ]
 
-# Mutable global state
+# mutable global state
 color_selected = 0
 mouse_pos = (0, 0)
 line_width = 2          # shared stroke width for shape tools (scroll to change)
 
-# The canvas surface (created at runtime by Canvas.init)
-canvas_surface = None
+canvas_surface = None  # created at runtime by Canvas.init
 
-# Undo / Redo history
+# undo / redo history
 MAX_UNDO = 50
 undo_stack = []
 redo_stack = []
 
 
 def push_undo_snapshot():
-    # Save a copy of the canvas so we can undo later.
+    # save a copy of canvas so we can undo
     if canvas_surface is None:
         return
+    # copy() makes a separate image, not a reference
+    # so changing canvas later doesnt mess up the saved version
     undo_stack.append(canvas_surface.copy())
     if len(undo_stack) > MAX_UNDO:
-        undo_stack.pop(0)
+        undo_stack.pop(0)  # drop oldest to stay under limit
+    # any new action kills the redo history
+    # otherwise youd have a weird branching timeline
     redo_stack.clear()
 
 
 def undo():
-    # Restore previous canvas state.
+    # go back to the last saved state
     global canvas_surface
     if not undo_stack or canvas_surface is None:
         return
     redo_stack.append(canvas_surface.copy())
+    # blit = paste. (0, 0) = top-left corner so it covers the whole canvas
     canvas_surface.blit(undo_stack.pop(), (0, 0))
 
 
 def redo():
-    # Re-apply undone canvas state.
+    # redo what we just undid
     global canvas_surface
     if not redo_stack or canvas_surface is None:
         return
     undo_stack.append(canvas_surface.copy())
-    canvas_surface.blit(redo_stack.pop(), (0, 0))
+    canvas_surface.blit(redo_stack.pop(), (0, 0))  # paste the redo snapshot back
 

@@ -1,4 +1,4 @@
-# Text input tool - click to place text on the canvas.
+# text tool - click to place text on the canvas
 
 import pygame
 from pynter.tools.tool import Tool
@@ -6,8 +6,7 @@ from pynter import globals as g
 
 
 class TextTool(Tool):
-    # Click on the canvas to set a text insertion point, then type.
-    # Press Enter to commit, Escape to cancel, Backspace to delete.
+    # click to set insertion point, type, enter to commit, esc to cancel
 
     def __init__(self):
         self.active = False
@@ -24,11 +23,11 @@ class TextTool(Tool):
         return self.cached_font
 
     def reset_font(self):
-        # Clear the cached font so it gets re-created with the new size or family.
+        # clear cached font so it gets remade with new size/family
         self.cached_font = None
 
     def draw(self, surface):
-        pass  # committed on Enter via handle_events
+        pass  # committed on enter
 
     def handle_events(self, event):
         if event is None:
@@ -51,8 +50,9 @@ class TextTool(Tool):
                 self.active = False
                 self.text = ""
             elif event.key == pygame.K_BACKSPACE:
-                self.text = self.text[:-1]
+                self.text = self.text[:-1]  # [:-1] = everything except the last character (backspace)
             else:
+                # isprintable filters out stuff like ctrl, shift, alt etc
                 if event.unicode and event.unicode.isprintable():
                     self.text += event.unicode
 
@@ -64,6 +64,7 @@ class TextTool(Tool):
                     current_index = self.font_families.index(self.font_family)
                 else:
                     current_index = 0
+                # % len wraps around so scrolling past the end goes back to the start
                 new_index = (current_index + event.y) % len(self.font_families)
                 self.font_family = self.font_families[new_index]
                 self.reset_font()
@@ -75,11 +76,15 @@ class TextTool(Tool):
 
     def preview(self, screen):
         if self.active and self.text:
+            # render(text, antialias, color)
+            # True = anti-aliased so the edges are smooth not jagged
             txt_surface = self.get_font().render(self.text, True, g.COLORS[g.color_selected])
             screen.blit(txt_surface, self.pos)
             # Blinking cursor line
             tw = txt_surface.get_width()
             th = txt_surface.get_height()
+            # blink cursor every half second
+            # get_ticks() = milliseconds since pygame started
             if pygame.time.get_ticks() % 1000 < 500:
                 pygame.draw.line(
                     screen, g.COLORS[g.color_selected],
@@ -94,7 +99,7 @@ class TextTool(Tool):
             screen.blit(hint, (mx + 6, my - 14))
 
     def commit(self):
-        # Render the text onto the canvas surface.
+        # blit the text onto the canvas
         if g.canvas_surface is not None and self.text:
             g.push_undo_snapshot()
             txt_surface = self.get_font().render(self.text, True, g.COLORS[g.color_selected])

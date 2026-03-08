@@ -1,4 +1,4 @@
-# Eraser tool - draws white over the canvas. Scroll to resize, Shift+scroll for opacity.
+# eraser tool - draws white over the canvas. scroll to resize, shift+scroll for opacity
 
 import pygame
 from pynter.tools.tool import Tool
@@ -13,7 +13,7 @@ class EraserTool(Tool):
         self.opacity = 100           # erase strength 10-100%
         self.stroke_started = False
         self.last_pos = None
-        self.original_canvas = None  # saved copy of canvas before this stroke starts
+        self.original_canvas = None  # saved copy before stroke starts so opacity doesnt compound
 
     def draw(self, surface):
         if pygame.mouse.get_pressed()[0]:
@@ -23,7 +23,8 @@ class EraserTool(Tool):
                     g.push_undo_snapshot()
                     self.stroke_started = True
                     self.last_pos = (mx, my)
-                    # Save original canvas so opacity blending doesn't compound
+                    # save original canvas before this stroke starts
+                    # so opacity blending doesnt stack when you go over the same pixel twice
                     if self.opacity < 100:
                         self.original_canvas = surface.copy()
                     self.erase_at(surface, mx, my)
@@ -50,14 +51,13 @@ class EraserTool(Tool):
     def erase_at(self, surface, x, y):
         half = self.eraser_size // 2
         if self.opacity >= 100:
-            # Full erase - just fill white
+            # full erase - just fill white
             rect = pygame.Rect(x - half, y - half, self.eraser_size, self.eraser_size)
             surface.fill(WHITE, rect)
         else:
-            # Blend each pixel from its ORIGINAL colour toward white.
-            # t is 0.0 to 1.0 -- how much to erase (based on opacity slider).
-            # Going over the same pixel twice in one stroke gives the same result
-            # because we always blend from the original, not the current canvas.
+            # blend each pixel from its ORIGINAL colour toward white
+            # lerp formula: original + (white - original) * t
+            # t=0 means no change, t=1 means full white
             t = self.opacity / 100.0
             sx = max(0, x - half)
             sy = max(0, y - half)
@@ -72,7 +72,7 @@ class EraserTool(Tool):
                     surface.set_at((px, py), (r, gr, b))
 
     def erase_line(self, surface, start, end):
-        # Draw between two points so there's no gaps in the erasing.
+        # draw between two points so theres no gaps
         x0, y0 = start
         x1, y1 = end
         dx = x1 - x0

@@ -1,4 +1,4 @@
-# Tool selection side-panel.
+# tool selection side panel
 
 from enum import IntEnum
 import pygame
@@ -27,6 +27,8 @@ from pynter.tools import (
     MagnifierTool,
 )
 
+# IntEnum = enum that also works as int, so Tools.PENCIL == 6
+# handy for indexing into arrays
 class Tools(IntEnum):
     SELECT_BOX = 0
     TEXT_INPUT = 1
@@ -68,11 +70,13 @@ class ToolSelect:
     def init(self):
         self.tool_boxes = []
         for i in range(g.TOOL_BOX_ICONS_COUNT):
+            # 2-column grid: i % 2 gives column (0 or 1), i // 2 gives row
             x = 20 + 60 * (i % 2)
             y = 60 + 60 * (i // 2)  # Start 40px higher
             self.tool_boxes.append(pygame.Rect(x, y, 40, 40))
 
         # load icon images
+        # list comprehension: builds icon list by running bitmap_to_surface on each bitmap
         self.icon_cache = [
             bitmap_to_surface(bmp, (40, 40, 40), scale=1)
             for bmp in TOOL_ICON_BITMAPS
@@ -83,6 +87,7 @@ class ToolSelect:
 
     def select_tool(self, tool):
         self.selected_tool = tool
+        # factory pattern - maps enum to class so we can make the right tool with one lookup
         factory = {
             Tools.PENCIL: PencilTool,
             Tools.BRUSH: BrushTool,
@@ -122,7 +127,7 @@ class ToolSelect:
                     break
 
     def update(self):
-        # check which tool button the mouse is over
+        # check which tool button mouse is over
         self.tool_mouse_hover = -1
         for i, box in enumerate(self.tool_boxes):
             if box.collidepoint(g.mouse_pos):
@@ -130,7 +135,7 @@ class ToolSelect:
                 break
 
     def draw(self, screen):
-        # side panel bg - clean beige
+        # side panel bg - beige
         pygame.draw.rect(screen, (236, 233, 216), pygame.Rect(0, 0, 140, g.SCREEN_HEIGHT))
 
         font = pygame.font.SysFont(None, 18)
@@ -155,22 +160,24 @@ class ToolSelect:
 
             # hover effect
             if i == self.tool_mouse_hover and self.selected_tool != Tools(i):
-                # transparent surface so it blends
+                # SRCALPHA for transparent hover overlay
                 hover_surf = pygame.Surface((box.width, box.height), pygame.SRCALPHA)
-                hover_surf.fill((255, 255, 255, 100))
+                hover_surf.fill((255, 255, 255, 100))  # 100/255 ≈ 40% see-through
                 screen.blit(hover_surf, box.topleft)
 
         # Info / hint text below the tool buttons
         self.draw_info(screen)
 
     def draw_info(self, screen):
-        # show tool-specific info + hints below the buttons
+        # tool-specific info + hints below the buttons
+        # y position just below the last row of tool buttons (grid start + rows*row_height + button + padding)
         info_y = 60 + 60 * ((g.TOOL_BOX_ICONS_COUNT - 1) // 2) + 40 + 10
         info_font = pygame.font.SysFont(None, 22)
 
         # Show size for brush / eraser
         if self.selected_tool in (Tools.BRUSH, Tools.ERASER) and self.current_tool is not None:
             if self.selected_tool == Tools.BRUSH:
+                # getattr safely gets attribute, returns 0 if missing
                 val = int(getattr(self.current_tool, 'brush_size', 0))
                 if hasattr(self.current_tool, 'get_shape_name'):
                     shape_name = self.current_tool.get_shape_name()
@@ -285,6 +292,7 @@ class ToolSelect:
             rgb_txt = pygame.font.SysFont(None, 18).render(f"RGB: ({current_color.r}, {current_color.g}, {current_color.b})", True, (60, 60, 60))
             screen.blit(rgb_txt, (20, info_y))
             info_y += 20
+            # :02x = format as 2-digit hex with leading zero (eg 9 -> "09", 255 -> "ff")
             hex_color = f"#{current_color.r:02x}{current_color.g:02x}{current_color.b:02x}".upper()
             hex_txt = pygame.font.SysFont(None, 18).render(f"Hex: {hex_color}", True, (60, 60, 60))
             screen.blit(hex_txt, (20, info_y))
@@ -338,14 +346,15 @@ class ToolSelect:
             self.draw_credits(screen, info_y)
 
     def draw_credits(self, screen, y):
-        # credit logo at the bottom, only load it once
+        # credit logo at the bottom, only load once
         if not hasattr(self, 'credit_img'):
             try:
-                # convert_alpha so transparency works
+                # convert_alpha loads the image with transparency support
                 img = pygame.image.load("pynter/credit.png").convert_alpha()
+                # scale to fit panel width, keep aspect ratio (new_h = old_h * new_w / old_w)
                 w = g.SIDE_PANEL_WIDTH - 20
                 h = int(img.get_height() * (w / img.get_width()))
-                # resize to fit the panel
+                # smoothscale looks better than regular scale (anti-aliased resize)
                 self.credit_img = pygame.transform.smoothscale(img, (w, h))
             except:
                 self.credit_img = None

@@ -1,1 +1,1 @@
-# Pynter - A drawing and paint tool built with Pygame
+# pynter - a drawing and paint tool built with pygame

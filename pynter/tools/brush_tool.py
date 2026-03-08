@@ -1,5 +1,5 @@
-# Brush tool - circle or spray brush. Tab to switch type, scroll to resize,
-# Shift+scroll to change spray density.
+# brush tool - circle or spray. tab to switch, scroll to resize,
+# shift+scroll to change spray density
 
 import random
 import pygame
@@ -7,7 +7,7 @@ from pynter.tools.tool import Tool
 from pynter import globals as g
 
 
-# Two brush types
+# two brush types
 BRUSH_CIRCLE = 0
 BRUSH_SPRAY = 1
 
@@ -23,7 +23,7 @@ class BrushTool(Tool):
         self.stroke_started = False
         self.last_pos = None
 
-    # Circle tip - cached since it doesn't change
+    # circle tip - cached since it doesnt change
     def get_circle_tip(self, color):
         key = (int(self.brush_size), (color.r, color.g, color.b))
         if key in self.tip_cache:
@@ -38,7 +38,7 @@ class BrushTool(Tool):
         self.tip_cache[key] = tip
         return tip
 
-    # Spray tip - random dots each time, never cached
+    # spray tip - random dots each time, never cached
     def make_spray(self, color):
         sz = int(self.brush_size) * 2
         # SRCALPHA lets the surface have per-pixel transparency
@@ -46,7 +46,8 @@ class BrushTool(Tool):
         half = sz // 2
         r = int(self.brush_size)
 
-        # Scale dot count with both radius and density setting
+        # scale dot count with both radius and density
+        # scale dot count by radius (r/10 so a radius-10 brush = 1x density, bigger = more dots)
         dot_count = max(5, int(self.spray_density * (r / 10.0)))
         for _ in range(dot_count):
             dx = random.randint(-r, r)
@@ -61,11 +62,12 @@ class BrushTool(Tool):
             tip = self.make_spray(color)
         else:
             tip = self.get_circle_tip(color)
+        # offset by half so the brush is centered on cursor, not top-left
         surface.blit(tip, (mx - tip.get_width() // 2,
                            my - tip.get_height() // 2))
 
     def draw_smooth_line(self, surface, start, end, color):
-        # Draw a smooth line between two points using brush stamps.
+        # smooth line between two points using brush stamps
         x1, y1 = start
         x2, y2 = end
 
@@ -74,6 +76,7 @@ class BrushTool(Tool):
             return
 
         # Stamp along path
+        # stamp every quarter of the brush so strokes overlap and look solid
         spacing = max(1, self.brush_size * 0.25)
         steps = max(1, int(distance / spacing))
         for i in range(1, steps + 1):
@@ -114,7 +117,7 @@ class BrushTool(Tool):
                 # Regular scroll changes brush size
                 self.brush_size += event.y * 5
                 self.brush_size = max(2, min(50, self.brush_size))
-                self.tip_cache.clear()
+                self.tip_cache.clear()  # throw out cached tips since size changed
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_TAB:
             # Toggle between circle and spray
             if self.brush_type == BRUSH_CIRCLE:
@@ -125,7 +128,7 @@ class BrushTool(Tool):
 
     def preview(self, screen):
         mx, my = g.mouse_pos
-        if pygame.mouse.get_pressed()[2]:  # right-click -> outline only
+        if pygame.mouse.get_pressed()[2]:  # right click = outline only
             sz = int(self.brush_size) * 2
             pygame.draw.rect(screen, (130, 130, 130),
                              (mx - sz // 2, my - sz // 2, sz, sz), 1)

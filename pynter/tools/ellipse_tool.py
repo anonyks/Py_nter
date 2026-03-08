@@ -1,4 +1,4 @@
-# Ellipse tool - drag to define bounding box. Uses midpoint ellipse algorithm.
+# ellipse tool - drag to define bounding box. uses midpoint ellipse algorithm
 
 import pygame
 from pynter.tools.tool import Tool
@@ -12,13 +12,15 @@ class EllipseTool(Tool):
         self.final_pos = (0, 0)
 
     def params(self):
+        # returns (center_x, center_y, radius_x, radius_y) from the drag bounding box
         xc = (self.initial_pos[0] + self.final_pos[0]) // 2
         yc = (self.initial_pos[1] + self.final_pos[1]) // 2
         rx = abs(self.final_pos[0] - self.initial_pos[0]) // 2
         ry = abs(self.final_pos[1] - self.initial_pos[1]) // 2
         return xc, yc, rx, ry
 
-    # Midpoint ellipse algorithm
+    # midpoint ellipse algorithm
+    # only computes 1/4 of the ellipse then mirrors it 4 ways
     # each point is a small square for thickness
     def plot_4(self, surface, cx, cy, x, y, color, w=1):
         for px, py in [
@@ -36,13 +38,16 @@ class EllipseTool(Tool):
         self.draw_single_ellipse(surface, cx, cy, rx, ry, color, width)
 
     def draw_single_ellipse(self, surface, cx, cy, rx, ry, color, w=1):
-        # first half - go along x
+        # first half - step along x until slope gets too steep
         x, y = 0, ry
         rx2 = rx * rx
         ry2 = ry * ry
+        # initial decision value for the flatter top region
         d1 = ry2 - rx2 * ry + rx2 // 4
         self.plot_4(surface, cx, cy, x, y, color, w)
 
+        # ry2*x < rx2*y means we're still in the flatter part
+        # once slope gets steep we switch to stepping along y
         while ry2 * x < rx2 * y:
             x += 1
             if d1 < 0:
@@ -52,7 +57,8 @@ class EllipseTool(Tool):
                 d1 += 2 * ry2 * x - 2 * rx2 * y + ry2
             self.plot_4(surface, cx, cy, x, y, color, w)
 
-        # second half - go along y
+        # second half - step along y
+        # initial decision value for the steeper side region
         d2 = ry2 * (x * 2 + 1) ** 2 // 4 + rx2 * (y - 1) ** 2 - rx2 * ry2
         while y >= 0:
             y -= 1

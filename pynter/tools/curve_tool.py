@@ -1,11 +1,11 @@
-# Bezier curve tool - add control points by clicking, press Enter to commit.
+# bezier curve tool - add control points by clicking, press enter to commit
 
 import pygame
 from pynter.tools.tool import Tool
 from pynter import globals as g
 
 
-# Bezier curve helpers
+# bezier curve helpers
 def factorial(n):
     if n <= 0:
         return 1
@@ -16,7 +16,7 @@ def factorial(n):
 
 
 def n_cr(n, r):
-    # "n choose r" - how many ways to pick r items from n.
+    # "n choose r" - how many ways to pick r items from n
     return factorial(n) // (factorial(r) * factorial(n - r))
 
 
@@ -37,6 +37,8 @@ class CurveTool(Tool):
         x, y = 0.0, 0.0
         for i in range(n):
             bin_coeff = n_cr(n - 1, i)
+            # bernstein basis: weight for this control point
+            # fades in as t goes from 0 to 1 so the curve smoothly passes near each point
             term = bin_coeff * ((1 - t) ** (n - 1 - i)) * (t ** i)
             x += term * control_points[i][0]
             y += term * control_points[i][1]
@@ -45,6 +47,7 @@ class CurveTool(Tool):
     def compute_bezier_curve(self):
         pts = []
         t = 0.0
+        # tiny steps for a smooth curve (smaller = smoother but slower)
         while t <= 1.0:
             pts.append(self.bezier_point(self.control_points, t))
             t += 0.0005
@@ -59,14 +62,15 @@ class CurveTool(Tool):
                 int_points = []
                 for pt in self.curve_points:
                     int_points.append((int(pt[0]), int(pt[1])))
-                # Filter out invalid points
+                # filter out points that are off screen
                 valid_points = []
                 for x, y in int_points:
                     if 0 <= x < surface.get_width() and 0 <= y < surface.get_height():
                         valid_points.append((x, y))
                 if len(valid_points) > 1:
+                    # False = dont close the shape (open curve, not a loop)
                     pygame.draw.lines(surface, color, False, valid_points, g.line_width)
-                    # Round off the endpoints so they don't look jagged
+                    # round off endpoints so they dont look jagged
                     if g.line_width > 1:
                         r = g.line_width // 2
                         pygame.draw.circle(surface, color, valid_points[0], r)
@@ -118,10 +122,10 @@ class CurveTool(Tool):
         if self.is_enter_pressed:
             return
         color = g.COLORS[g.color_selected]
-        # Draw control points as red circles
+        # draw control points as red circles
         for pt in self.control_points:
             pygame.draw.circle(screen, (230, 41, 55), (int(pt[0]), int(pt[1])), 8)
-        # Draw curve preview with proper line width
+        # draw curve preview with line width
         if len(self.curve_points) > 1:
             int_points = []
             for pt in self.curve_points:
@@ -132,7 +136,7 @@ class CurveTool(Tool):
                     valid_points.append((x, y))
             if len(valid_points) > 1:
                 pygame.draw.lines(screen, color, False, valid_points, g.line_width)
-                # Round off the endpoints so they don't look jagged
+                    # round off endpoints so they dont look jagged
                 if g.line_width > 1:
                     r = g.line_width // 2
                     pygame.draw.circle(screen, color, valid_points[0], r)

@@ -1,5 +1,5 @@
-# Mandala tool - draws with symmetry around a center point.
-# Whatever you draw gets copied and rotated around the center.
+# mandala tool - draws with symmetry around a center point
+# whatever you draw gets copied and rotated around the center
 
 import math
 import pygame
@@ -16,11 +16,10 @@ class MandalaTool(Tool):
         self.brush_size = 3      # Size of brush circles (1-20)
 
     def draw(self, surface):
-        # Drawing happens in real-time during mouse motion in handle_events
-        pass
+        pass  # drawing happens live during mouse motion
 
     def draw_symmetric_line(self, surface, start, end):
-        # Draw a smooth symmetric line between two points.
+        # smooth line between two points with radial copies
         color = g.COLORS[g.color_selected]
         cx, cy = self.center_pos
         
@@ -41,13 +40,13 @@ class MandalaTool(Tool):
             x = x1 + t * (x2 - x1)
             y = y1 + t * (y2 - y1)
             
-            # Apply symmetry - rotate each point around the center
+            # evenly divide the full circle (2π) by symmetry count
             for sym_i in range(self.symmetry_count):
                 angle = 2 * math.pi * sym_i / self.symmetry_count
                 cos_a = math.cos(angle)
                 sin_a = math.sin(angle)
 
-                # Rotation formula: shift point to origin, rotate, shift back
+                # rotation formula: shift point to origin, rotate, shift back
                 rel_x = x - cx
                 rel_y = y - cy
                 new_x = cx + rel_x * cos_a - rel_y * sin_a
@@ -55,10 +54,11 @@ class MandalaTool(Tool):
                 
                 px, py = int(new_x), int(new_y)
                 if 0 <= px < surface.get_width() and 0 <= py < surface.get_height():
+                    # brush_size is diameter, draw.circle wants radius so // 2
                     pygame.draw.circle(surface, color, (px, py), self.brush_size // 2)
 
     def draw_symmetric_stroke(self, surface, stroke_points):
-        # Draw a stroke with radial symmetry.
+        # draw a stroke with radial symmetry
         if len(stroke_points) < 2:
             return
             
@@ -70,7 +70,7 @@ class MandalaTool(Tool):
             x1, y1 = stroke_points[i]
             x2, y2 = stroke_points[i + 1]
             
-            # Draw rotated segments
+            # draw rotated segments
             for sym_i in range(self.symmetry_count):
                 angle = 2 * math.pi * sym_i / self.symmetry_count
                 cos_a = math.cos(angle)
@@ -86,7 +86,7 @@ class MandalaTool(Tool):
                 new_x2 = cx + rel_x2 * cos_a - rel_y2 * sin_a
                 new_y2 = cy + rel_x2 * sin_a + rel_y2 * cos_a
                 
-                # Stamp along path
+                # stamp along path
                 distance = ((new_x2 - new_x1) ** 2 + (new_y2 - new_y1) ** 2) ** 0.5
                 if distance > 1:
                     spacing = max(1, self.brush_size * 0.3)
