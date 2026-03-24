@@ -4,3 +4,13 @@ pdfs/
 desktop.ini
 gui_bckup.py
 *.ipynb
+
+# Ignore all markdown files except README.md
+*.md
+!README.md
+
+# Ignore PDF files
+*.pdf
+*.docx
+figs_4_report/
+figure_gen_code/

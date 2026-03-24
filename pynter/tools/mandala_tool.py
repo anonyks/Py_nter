@@ -55,7 +55,7 @@ class MandalaTool(Tool):
                 px, py = int(new_x), int(new_y)
                 if 0 <= px < surface.get_width() and 0 <= py < surface.get_height():
                     # brush_size is diameter, draw.circle wants radius so // 2
-                    pygame.draw.circle(surface, color, (px, py), self.brush_size // 2)
+                    pygame.draw.circle(surface, color, (px, py), max(1, self.brush_size // 2))
 
     def draw_symmetric_stroke(self, surface, stroke_points):
         # draw a stroke with radial symmetry
@@ -99,7 +99,7 @@ class MandalaTool(Tool):
                         x = int(new_x1 + t * (new_x2 - new_x1))
                         y = int(new_y1 + t * (new_y2 - new_y1))
                         if 0 <= x < surface.get_width() and 0 <= y < surface.get_height():
-                            pygame.draw.circle(surface, color, (x, y), self.brush_size // 2)
+                            pygame.draw.circle(surface, color, (x, y), max(1, self.brush_size // 2))
 
     def handle_events(self, event):
         if event is None:
@@ -160,4 +160,4 @@ class MandalaTool(Tool):
             self.draw_symmetric_stroke(screen, self.current_stroke)
             
         # Show cursor brush size
-        pygame.draw.circle(screen, (150, 150, 150), (mx, my), self.brush_size // 2, 1)
+        pygame.draw.circle(screen, (150, 150, 150), (mx, my), max(1, self.brush_size // 2), 1)
