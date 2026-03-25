@@ -41,7 +41,7 @@ class MainWindowGUI:
         pygame.display.set_caption("Pynter")
         # set window icon
         try:
-            icon = pygame.image.load("pynter/icon.ico")
+            icon = pygame.image.load(g.resource_path("pynter/icon.ico"))
             pygame.display.set_icon(icon)
         except:
             pass  # no icon file, whatever

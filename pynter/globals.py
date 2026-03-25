@@ -1,6 +1,13 @@
 # shared state that everything uses
 
+import os
+import sys
 import pygame
+
+def resource_path(relative_path):
+    """Get path to resource, works for dev and PyInstaller bundle."""
+    base = getattr(sys, '_MEIPASS', os.path.abspath("."))
+    return os.path.join(base, relative_path)
 
 # constants
 MAX_COLORS_COUNT = 23

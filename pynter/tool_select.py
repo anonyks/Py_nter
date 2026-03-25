@@ -350,7 +350,7 @@ class ToolSelect:
         if not hasattr(self, 'credit_img'):
             try:
                 # convert_alpha loads the image with transparency support
-                img = pygame.image.load("pynter/credit.png").convert_alpha()
+                img = pygame.image.load(g.resource_path("pynter/credit.png")).convert_alpha()
                 # scale to fit panel width, keep aspect ratio (new_h = old_h * new_w / old_w)
                 w = g.SIDE_PANEL_WIDTH - 20
                 h = int(img.get_height() * (w / img.get_width()))

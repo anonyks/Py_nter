@@ -14,3 +14,8 @@ gui_bckup.py
 *.docx
 figs_4_report/
 figure_gen_code/
+ext_sources/
+*.spec
+build/
+dist/
+!project_report.pdf
