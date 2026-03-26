@@ -1,4 +1,4 @@
-# base class that all tools inherit from
+# AbstractBaseClass that all tools inherit from
 
 # ABC and abstractmethod force every tool to have the required methods
 # if a tool forgets to define draw/handle_events/preview python will throw an error

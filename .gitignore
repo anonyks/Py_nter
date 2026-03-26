@@ -18,4 +18,4 @@ ext_sources/
 *.spec
 build/
 dist/
-!project_report.pdf
+!project_report_cg.pdf

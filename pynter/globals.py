@@ -5,7 +5,7 @@ import sys
 import pygame
 
 def resource_path(relative_path):
-    """Get path to resource, works for dev and PyInstaller bundle."""
+    #Get path to resource, works for dev and PyInstaller bundle.
     base = getattr(sys, '_MEIPASS', os.path.abspath("."))
     return os.path.join(base, relative_path)
 
@@ -64,12 +64,10 @@ def push_undo_snapshot():
     if canvas_surface is None:
         return
     # copy() makes a separate image, not a reference
-    # so changing canvas later doesnt mess up the saved version
     undo_stack.append(canvas_surface.copy())
     if len(undo_stack) > MAX_UNDO:
         undo_stack.pop(0)  # drop oldest to stay under limit
     # any new action kills the redo history
-    # otherwise youd have a weird branching timeline
     redo_stack.clear()
 
 

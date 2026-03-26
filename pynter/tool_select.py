@@ -334,7 +334,7 @@ class ToolSelect:
                 "H=Flip Horiz",
                 "V=Flip Vert",
                 "+/- = Scale",
-                "Esc=Cancel",
+                "Esc=Delete",
             ]
             for line in hints:
                 txt = tiny.render(line, True, (100, 100, 100))

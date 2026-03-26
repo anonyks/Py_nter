@@ -1,4 +1,3 @@
-# bitmap helpers for tool icons
 # each bitmap is a list of strings where '#' = filled pixel
 # and '.' = transparent. used for the small icons on tool buttons
 
@@ -6,13 +5,11 @@ import pygame
 
 
 def bitmap_to_surface(bitmap, fg, scale=1):
-    # turn a bitmap (list of strings) into a pygame surface
     rows = len(bitmap)
     # find the widest row (generator expression feeds each row length into max)
     cols = max(len(r) for r in bitmap)
     # SRCALPHA = per-pixel transparency
     surf = pygame.Surface((cols * scale, rows * scale), pygame.SRCALPHA)
-    # enumerate gives (row_index, row_string) so we know which row we're on
     for r, row in enumerate(bitmap):
         for c, ch in enumerate(row):
             if ch == "#":

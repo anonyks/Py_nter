@@ -50,7 +50,9 @@ class Canvas:
         # also clipped so preview doesnt bleed into the border
         if tool is not None:
             mx, my = g.mouse_pos
-            if my > g.TOOLBAR_HEIGHT:
+            # always show preview when tool has uncommitted content (e.g. text being typed)
+            has_pending = getattr(tool, 'active', False) and getattr(tool, 'text', '')
+            if my > g.TOOLBAR_HEIGHT or has_pending:
                 screen.set_clip(self.clip)
                 tool.preview(screen)
                 screen.set_clip(None)
