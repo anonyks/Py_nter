@@ -19,6 +19,7 @@ from pynter.tools.fill_tool import FillTool
 from pynter.tools.eyedropper_tool import EyeDropperTool
 from pynter.tools.text_tool import TextTool
 from pynter.tools.magnifier_tool import MagnifierTool
+from pynter.tools.pentagon_tool import PentagonTool
 
 # __all__ tells python which names to export when someone does "from pynter.tools import *"
 __all__ = [
@@ -41,4 +42,5 @@ __all__ = [
     "EyeDropperTool",
     "TextTool",
     "MagnifierTool",
+    "PentagonTool",
 ]
