@@ -12,15 +12,21 @@ class PentagonTool(Tool):
     def get_pentagon_points(self):
         sx, sy = self.start_pos
         ex, ey = self.end_pos
-        cx = (sx + ex) / 2
-        cy = (sy + ey) / 2
-        r = math.hypot(ex - sx, ey - sy) / 2
-        # start at top (270 degrees), go clockwise
+        x = min(sx, ex)
+        y = min(sy, ey)
+        w = abs(ex - sx)
+        h = abs(ey - sy)
+        cx = x + w / 2
+        cy = y + h / 2
+        rx = w / 2
+        ry = h / 2
+        # separate rx/ry to be flexible (stretches to fit the drag rectangle)
+        # start at top (-90°), go clockwise
         points = []
         for i in range(5):
             angle = math.radians(-90 + i * 72)
-            px = cx + r * math.cos(angle)
-            py = cy + r * math.sin(angle)
+            px = cx + rx * math.cos(angle)
+            py = cy + ry * math.sin(angle)
             points.append((px, py))
         return points
 
