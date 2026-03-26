@@ -25,6 +25,7 @@ from pynter.tools import (
     EyeDropperTool,
     TextTool,
     MagnifierTool,
+    PentagonTool
 )
 
 # IntEnum = enum that also works as int, so Tools.PENCIL == 6
@@ -48,6 +49,7 @@ class Tools(IntEnum):
     HYPNOTISER = 15
     SPIRAL = 16
     MANDALA = 17
+    PENTAGON = 18
 
 
 TOOL_LABELS = [
@@ -55,6 +57,7 @@ TOOL_LABELS = [
     "EYE", "MAG", "PEN", "BRU",
     "LIN", "CRV", "SQR", "REC",
     "CIR", "ELL", "TRI", "HYP",
+    "SPR", "MAN", "PEN5",
 ]
 
 
@@ -107,6 +110,7 @@ class ToolSelect:
             Tools.EYE_DROPPER: EyeDropperTool,
             Tools.TEXT_INPUT: TextTool,
             Tools.MAGNIFIER: MagnifierTool,
+            Tools.PENTAGON: PentagonTool,
         }
         cls = factory.get(tool)
         if cls is not None:
@@ -222,13 +226,15 @@ class ToolSelect:
                 screen.blit(hint1_txt, (20, info_y))
 
         # Show width for shape tools
+        
         elif self.selected_tool in (Tools.LINE, Tools.CURVE, Tools.RECTANGLE, Tools.SQUARE,
-                                       Tools.CIRCLE, Tools.ELLIPSE, Tools.TRIANGLE):
+                                       Tools.CIRCLE, Tools.ELLIPSE, Tools.TRIANGLE,Tools.PENTAGON):
             w_txt = info_font.render(f"Width: {g.line_width}", True, (60, 60, 60))
             screen.blit(w_txt, (20, info_y))
             info_y += 20
             hint_txt = pygame.font.SysFont(None, 16).render("Scroll to adjust", True, (120, 120, 120))
             screen.blit(hint_txt, (20, info_y))
+        
 
         # Show spacing for hypnotiser
         elif self.selected_tool == Tools.HYPNOTISER and self.current_tool is not None:

@@ -11,7 +11,7 @@ def resource_path(relative_path):
 
 # constants
 MAX_COLORS_COUNT = 23
-TOOL_BOX_ICONS_COUNT = 18
+TOOL_BOX_ICONS_COUNT = 19
 
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 720
